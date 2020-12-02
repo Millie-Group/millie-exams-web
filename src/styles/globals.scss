@@ -1,0 +1,143 @@
+// you can use any variables/mixins/etc. defined here in any of the components
+// do not put actual global styles here
+// do that in layouts instead
+
+// colors
+$primary: #0069ff;
+$accent: black;
+
+// font-stacks
+$display-stack: 'Work Sans', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+$content-stack: Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$serif-stack: 'Merriweather', Georgia, 'Times New Roman', Times, serif;
+
+// media query mi xins
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: #{$tablet-width}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+// utils
+@mixin flex-center($dir: vh) {
+  display: flex;
+
+  @if $dir == h or $dir == vh or $dir == hv {
+    justify-content: center;
+  }
+
+  @if $dir == v or $dir == vh or $dir == hv {
+    align-items: center;
+  }
+}
+
+@mixin margin-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// dir is either v or h
+@mixin child-gap($gap, $dir: h) {
+  & > * + * {
+    @if $dir == h {
+      margin-left: $gap;
+      margin-top: 0;
+    }
+    @if $dir == v {
+      margin-top: $gap;
+      margin-left: 0;
+    }
+  }
+}
+
+@mixin pseudo($display: block, $pos: absolute, $content: '') {
+  content: $content;
+  display: $display;
+  position: $pos;
+}
+
+@mixin padded-sides($mobile, $tablet-up: $mobile) {
+  padding-left: $mobile;
+  padding-right: $mobile;
+
+  @include tablet-up {
+    padding-left: $tablet-up;
+    padding-right: $tablet-up;
+  }
+}
+
+@mixin page-bg($color) {
+  background: $color;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+}
+
+// main: s, c, e, sb, sa, se
+// cross: a, c, s, e
+// syntax: main/cross
+@mixin flex($dir: 's/a') {
+  $index : str-index($string, '/');
+  $main: str-slice($string, 1, $index - 1);
+  $cross: str-slice($string, $index + 1);
+  
+  display: flex;
+
+  justify-content:  map-get((
+    s: flex-start,
+    e: flex-end,
+    c: center,
+    sb: space-between,
+    sa: space-around,
+    se: space-evenly,
+    '': flex-start
+  ), $main);
+}
+
+@mixin scrimGradient($startColor, $direction: 'to bottom') {
+  $scrimCoordinates: (
+    0: 1,
+    19: 0.738,
+    34: 0.541,
+    47: 0.382,
+    56.5: 0.278,
+    65: 0.194,
+    73: 0.126,
+    80.2: 0.075,
+    86.1: 0.042,
+    91: 0.021,
+    95.2: 0.008,
+    98.2: 0.002,
+    100: 0
+  );
+
+  $hue: hue($startColor);
+  $saturation: saturation($startColor);
+  $lightness: lightness($startColor);
+  $stops: ();
+
+  @each $colorStop, $alphaValue in $scrimCoordinates {
+    $stop: hsla($hue, $saturation, $lightness, $alphaValue) percentage($colorStop/100);
+    $stops: append($stops, $stop, comma);
+  }
+
+  background-image: linear-gradient(unquote($direction), $stops);
+}
