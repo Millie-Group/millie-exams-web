@@ -19,7 +19,7 @@ module.exports = {
   ** See https://nuxtjs.org/api/configuration-head
   */
   head: {
-    title: 'Ensemble Education – Test Prep powered by AI',
+    title: 'Millie Exams',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -34,7 +34,12 @@ module.exports = {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@400&family=Roboto:wght@400;500&display=swap' },
       {rel: 'stylesheet', href: 'https://unpkg.com/boxicons@2.0.5/css/boxicons.min.css'},
       {rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css'}
-    ]
+    ],
+    script: [
+      {
+        src: '/static/csv.js'
+      }
+    ],
   },
 
   // loading: '~/components/Loading.vue',
