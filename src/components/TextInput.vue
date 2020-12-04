@@ -1,15 +1,15 @@
 <template>
-  <input v-model="val_">
+  <input v-model="val_" v-bind="$attrs">
 </template>
 
 <script>
 export default {
   props: {
-    val: String
+    val: null
   },
   data() {
     return {
-      val_: ''
+      val_: this.val ?? ''
     }
   },
   watch: {
@@ -18,11 +18,20 @@ export default {
       handler(n) {
         this.$emit('update:val', n);
       }
+    },
+    val: {
+      immediate: true,
+      handler(n) {
+        this.val_ = n;
+      }
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+input {
+  border: 2px solid #fb6c30;
+  border-radius: 3px;
+}
 </style>
