@@ -1,77 +1,271 @@
 <template>
-  <div>
-    <input v-model="name">
-    <client-only>
+  <div class="wide-padded-container">
+    <Logo />
+    <BackButton />
+    <div class="name-input-wrap">
+      <!-- <h1>Examination session name</h1> -->
+      <TextInput :val.sync="name" placeholder="Name" />
+      <date-picker v-model="date" type="datetime" />
+    </div>
+
+    <div class="file-submit-wrap">
+
+      <FileInput @load="loadCSV" />
+
+      <button v-if="selectedStudents.length && !isScoresIncorrect && isUpdated" class="submit-btn" @click="submit">
+        <template v-if="!edit">
+          Create
+        </template>
+        <template v-else>
+          Update
+        </template>
+      </button>
+
+    </div>
+
+    <!-- {{selectedStudents}} -->
+    <!-- {{getUnique(selectedStudents, 'schoolRel.id')}} -->
+
+    <div v-if="!isUpdated && selectedStudents.length" class="file-submit-wrap" style="margin-top: 30px;">
+      <SchoolEmailSelect :options="getUnique(selectedStudents.map(x => x.schoolRel), 'id')" :selected.sync="emailSchool" />
+      <button class="submit-btn" @click="sendEmails">
+        Send emails
+      </button>
+    </div>
+
+    <div v-if="selectedStudents.length" class="table-wrap">
       <table>
-        <tr>
-          <th>Student</th>
-          <th>Section 1</th>
-          <th>Section 2</th>
-          <th>Section 3</th>
-          <th>Section 4</th>
-        </tr>
-        <tr v-for="idx in studentsLength" :key="idx">
-          <td>
-            <ExamStudentSelect
-              :students="students"
-              :selected.sync="selectedStudents[idx-1]"
-            />
-          </td>
-          <td>
-            <TextInput :val.sync="scores[idx-1].section1" />
-          </td>
-          <td>
-            <TextInput :val.sync="scores[idx-1].section2" />
-          </td>
-          <td>
-            <TextInput :val.sync="scores[idx-1].section3" />
-          </td>
-          <td>
-            <TextInput :val.sync="scores[idx-1].section4" />
-          </td>
-        </tr>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>School</th>
+            <th>Present?</th>
+            <th v-for="i in 4" :key="'th' + i">
+              Section {{i}}
+            </th>
+            <th>
+              English
+            </th>
+            <th>
+              Math
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="idx in selectedStudents.length" :key="'tr' + idx" class="student-row" :class="[scores[idx-1].isIncorrect && 'incorrect']">
+            <td>
+              <ExamStudentInfo
+                :students="students"
+                :score="scores[idx-1]"
+                :selected.sync="selectedStudents[idx-1]"
+              />
+            </td>
+            <td><a v-if="selectedStudents[idx-1].schoolRel" :href="'/schools/' + selectedStudents[idx-1].schoolRel.access" target="_blank">{{selectedStudents[idx-1].school}}</a><span v-else>{{selectedStudents[idx-1].school}}</span></td>
+            <td>
+              <i :class="['bx', scores[idx-1].present ? 'bx-check' : 'bx-x']" />
+            </td>
+            <td v-for="i in 4" :key="'td1' + i">
+              {{scores[idx-1].correctCounts[i-1]}}
+            </td>
+            <td v-for="i in 2" :key="'td2' + i">
+              {{scores[idx-1].totals[i-1]}}
+            </td>
+          </tr>
+        </tbody>
       </table>
-    </client-only>
+    </div>
     <!-- <ExamStudentSelect
       v-for="idx in studentsLength"
       :key="idx"
       :students="students"
       :selected.sync="selectedStudents[idx-1]"
     /> -->
-    <button @click="studentsLength++">
-      Add
-    </button>
-
-    <button @click="submit">
-      Create
-    </button>
   </div>
 </template>
 
 <script>
+import * as _ from 'lodash';
+import DatePicker from 'vue2-datepicker';
+import 'vue2-datepicker/index.css';
 export default {
+  components: { DatePicker },
   data() {
     return {
       name: '',
+      date: '',
       email: '',
       students: [],
       selectedStudents: [],
       studentsLength: 1,
-      scores: []
+      scores: [],
+      isScoresIncorrect: false,
+      edit: this.$route.query.edit,
+      emailSchool: null,
+      isUpdated: false
     }
   },
   async fetch() {
     this.students = await this.$axios.$get('students');
+    // this.fetchEdit();
+  },
+  mounted() {
+    this.fetchEdit();
   },
   methods: {
-    async submit() {
-      const {id} = await this.$axios.$post('exams', {
-        name: this.name
-      })
+    getUnique(arr, field) {
+      return _.uniqBy(arr, field);
+    },
+    async fetchEdit() {
+      if (this.$route.query.edit) {
+        const data = await this.$axios.$get(`exams/${this.$route.query.edit}`);
 
-      for (const student of this.selectedStudents.filter(x => x)) {
-        await this.$axios.$post(`exams/${id}/students/${student.id}`);
+        this.selectedStudents = [];
+        this.studentsLength = 0;
+
+        this.$nextTick(() => {
+          this.selectedStudents = data.students.map(x => x.student).map(x => ({...x, school: x.school.name, schoolRel: x.school}));
+          this.studentsLength = this.selectedStudents.length + 1;
+          this.scores = data.students.map(x => x.score);
+          this.name = data.name;
+        });
       }
+    },
+    async submit() {
+      if (this.isScoresIncorrect) return;
+
+      let st = this.selectedStudents.filter(x => x);
+
+      const {id} = this.edit
+        ? await this.$axios.$put(`exams/${this.edit}`, {
+          name: this.name
+        })
+        : await this.$axios.$post('exams', {
+          name: this.name
+        });
+
+      const copy = [...this.scores];
+      for (const studentsScores of copy) {
+        studentsScores.correctCounts = studentsScores.correctCounts.map(x => +x);
+        studentsScores.totals = studentsScores.totals.map(x => +x);
+      }
+
+      const stReq = await this.$axios.$post('students', st);
+
+      st = st.map((x) => {
+        return stReq.find(y => y.email === x.email);
+      });
+
+      await this.$axios.$post(`exams/${id}/students`, st.map(x => x.id));
+
+      await this.$axios.$put(`exams/${id}/scores`, Object.entries(st).map(([k, v]) => ({student: v.id, score: copy[k]})));
+
+      if (this.edit) {
+        window.location.reload(true);
+      } else {
+        await this.$router.replace(`create-exam?edit=${id}`);
+        window.location.reload(true);
+      }
+    },
+    async sendEmails() {
+      if (!this.emailSchool) return;
+      const confirmed = window.confirm('Are you sure you want to send bulk emails?');
+      if (!confirmed) return;
+      // console.log(this.emailSchool);
+
+      await this.$axios.$post('send-emails', {school: this.emailSchool, exam: this.edit});
+
+      window.location.reload(true);
+    },
+    loadCSV(text) {
+      this.isUpdated = true;
+      const csv = window.CSV.parse(text);
+      const headers = csv[0].map(x => x.trim());
+      let lastSchool = null;
+
+      const columnIdx = {
+        present: headers.findIndex(x => x.startsWith('Present')),
+        email: headers.findIndex(x => x.startsWith('Email')),
+        name: headers.findIndex(x => x.startsWith('Student Name')),
+        school: headers.findIndex(x => x.startsWith('School Name')),
+        correctCounts: [
+          headers.findIndex(x => x.startsWith('Section 1')),
+          headers.findIndex(x => x.startsWith('Section 2')),
+          headers.findIndex(x => x.startsWith('Section 3')),
+          headers.findIndex(x => x.startsWith('Section 4'))
+        ],
+        totals: [
+          headers.findIndex(x => x.startsWith('English')),
+          headers.findIndex(x => x.startsWith('Math'))
+        ]
+      }
+      const body = csv.slice(1);
+      const students = body.map((row) => {
+        const obj = {};
+        for (const [name, idx] of Object.entries(columnIdx)) {
+          if (Array.isArray(idx) || ['school', 'present'].includes(name)) continue;
+          obj[name] = row[idx]
+        }
+        if (row[columnIdx.school]) {
+          obj.school = row[columnIdx.school];
+          lastSchool = obj.school;
+        } else {
+          obj.school = lastSchool;
+        }
+        return obj;
+      });
+      this.isScoresIncorrect = false;
+      const scores = body.map((row) => {
+        const obj = {};
+
+        obj.correctCounts = columnIdx.correctCounts.map(x => row[x] || 0);
+        obj.totals = columnIdx.totals.map(x => row[x] || 0)
+
+        // console.log()
+
+        if (['yes', 'true'].includes(row[columnIdx.present].toLowerCase()))
+          obj.present = true;
+        else if (['no', 'false'].includes(row[columnIdx.present].toLowerCase()))
+          obj.present = false;
+        else throw new Error('Incorrect CSV data for the "Present?" column');
+
+        if (obj.present) {
+          for (const [k, v] of [52, 44, 20, 38].entries()) {
+            // console.log(k, v, obj.correctCounts[k]);
+            if (obj.correctCounts[k] > v || obj.correctCounts[k] < 0) {
+              obj.isIncorrect = true;
+              this.isScoresIncorrect = true;
+            }
+          }
+
+          for (const total of obj.totals) {
+            if (total < 200 || total > 800) {
+              obj.isIncorrect = true;
+              this.isScoresIncorrect = true;
+            }
+          }
+        } else {
+          for (const correctCount of obj.correctCounts)
+            if (correctCount !== 0) {
+              obj.isIncorrect = true;
+              this.isScoresIncorrect = true;
+            }
+
+          for (const total of obj.totals)
+            if (total !== 0) {
+              obj.isIncorrect = true;
+              this.isScoresIncorrect = true;
+            }
+        }
+        return obj;
+      });
+      this.selectedStudents = [];
+      this.studentsLength = 0;
+
+      this.$nextTick(() => {
+        this.scores = scores;
+        this.selectedStudents = [...students];
+        this.studentsLength = students.length + 1;
+      });
     }
   },
   watch: {
@@ -79,13 +273,152 @@ export default {
       immediate: true,
       handler(n) {
         for (const i of Array(n).keys())
-          this.scores[i] = this.scores[i] || {};
+          this.scores[i] = this.scores[i] || {
+            correctCounts: [],
+            totals: []
+          };
+        this.scores = [...this.scores];
       }
+    },
+    scores: {
+      deep: true,
+      handler(n) {
+        // const copy = [...this.scores];
+        // for (const studentsScores of copy) {
+        //   for (const section of studentsScores.sections) {
+        //     section.correctCount = +section.correctCount;
+        //     section.score = +section.score;
+        //   }
+        // }
+        // this.scores = [...copy];
+      }
+    },
+    name(n, o) {
+      if (o)
+        this.isUpdated = true
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.table-wrap {
+  margin: 0 -.7em;
+}
+table {
+  position: relative;
+  margin-top: 30px;
+  width: 100%;
+  // width: calc(100% + 1.4em);
+  td {
+    padding: .5em .6em;
+    vertical-align: middle;
+    min-width: 90px;
+  }
+  th {
+    padding: .3em .6em;
+    z-index: 999;
+  }
+  td, th {
+    &:nth-child(1) {
+      width: 99%;
+      padding-left: .7em;
+    }
+    &:nth-last-child(1) {
+      padding-right: .7em;
+    }
+    &:nth-child(2) {
+      white-space: nowrap;
+    }
+  }
+  thead {
+    color: white;
+    tr {
+      height: 32px;
+      th {
+        color: #ff4b00;
+        background: #fff4f0;
+        font-weight: 500;
+        position: sticky;
+        top: 0;
+      }
+      &:nth-child(1) th {
+        font-weight: 500;
+        position: sticky;
+        top: 0;
+        padding-top: .6em;
+        padding-bottom: .6em;
+      }
+      // &:nth-child(2) th {
+      //   font-weight: 500;
+      //   position: sticky;
+      //   top: 32px;
+      // }
+      &:nth-child(1) th:nth-child(1) {
+        border-top-left-radius: 5px;
+      }
+      &:nth-child(1) th:nth-last-child(1) {
+        border-top-right-radius: 5px;
+      }
+      &:nth-last-child(1) th:nth-child(1) {
+        border-bottom-left-radius: 5px;
+      }
+      &:nth-last-child(1) th:nth-last-child(1) {
+        border-bottom-right-radius: 5px;
+      }
+    }
+  }
+  tbody tr {
+    &:nth-child(even) {
+      background: #f7f7f7;
+    }
+  }
+  max-width: 100%;
+  ::v-deep input {
+    max-width: 70px;
+    padding-left: .2em;
+    padding-right: .2em;
+  }
+}
+.name-input-wrap {
+  margin-bottom: 30px;
+  // margin-top: 50px;
+  display: flex;
+  align-items: stretch;
 
+  & > * + * {
+    margin-left: 15px;
+    z-index: 99999999999999999;
+  }
+  ::v-deep input {
+    padding: .3em .4em;
+  }
+}
+h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.submit-btn {
+  @include flex-center(v);
+  border-radius: 5px;
+  font-weight: 500;
+  font-size: 1.3rem;
+  color: #ff4b00;
+  background: transparentize($color: #ff4b00, $amount: .94);
+  padding: .3em .6em;
+  // margin-top: 20px;
+  // margin-bottom: 30px;
+  margin-left: 15px;
+}
+
+.file-submit-wrap {
+  @include flex-center(v);
+}
+
+.incorrect {
+  background: #ff5100 !important;
+  color: white !important;
+}
 </style>
