@@ -1,55 +1,62 @@
 <template>
-  <div v-if="student" class="page padded-container">
-    <div class="logo">
-      <svg viewBox="0 0 140 32">
-        <title>Millie</title>
-        <path d="M40.5 31.3h-7.4l-3.6-21.1-5.9 21.1H17l-6-21.1-3.6 21.1H0L5.9.7h8l6.4 21.5L26.6.7h8zM45.6.7h6.7v30.6h-6.7zm14.3 30.6V.7h6.7v24.5h11v6.1zm24.1 0V.7h6.7v24.5h10.9v6.1zM108 .7h6.7v30.6H108zm32 24.5v6.1h-17.7V.7H140v6.1h-11v6.1h10.6V19H129v6.2z" />
-      </svg>
-    </div>
+  <div>
+    <div v-if="student" class="page padded-container">
+      <Logo />
+      <h1 class="student-name">
+        {{student.name}}
+      </h1>
+      <div v-for="exam in student.exams" :key="exam.exam.id">
+        <section class="exam">
+          <h2 class="exam-name">
+            {{exam.exam.name}}
+          </h2>
+          <template v-if="exam.score && exam.score.present">
+            <table>
+              <thead>
+                <tr>
+                  <th>Section</th>
+                  <th>Correct answers</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(count, idx) in exam.score.correctCounts" :key="idx">
+                  <td>
+                    {{
+                      [
+                        'Section 1: Reading',
+                        'Section 2: Writing',
+                        'Section 3: Math No Calculator',
+                        'Section 4: Math Calculator'
+                      ][idx]
+                    }}
+                  </td>
+                  <td>
+                    {{count}} / {{[52, 44, 20, 28][idx]}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-    <h1 class="student-name">
-      {{student.name}}
-    </h1>
-    <div v-for="exam in student.exams" :key="exam.exam.id">
-      <section class="exam">
-        <h2 class="exam-name">
-          {{exam.exam.name}}
-        </h2>
-        <template v-if="exam.score">
-          <table>
-            <thead>
-              <td>Section</td>
-              <td>Correct answers</td>
-            </thead>
-            <tr v-for="(section, idx) in exam.score.sections" :key="idx">
-              <td>
-                {{section.name}}
-              </td>
-              <td>
-                {{section.correctCount}} / {{[52, 44, 20, 28][idx]}}
-              </td>
-            </tr>
-          </table>
-
-          <div class="score-sum-wrap">
-            <div class="score-sum">
-              <h6>English score</h6>
-              <em>{{exam.score.english}}</em> / 1600
+            <div class="score-sum-wrap">
+              <div class="score-sum">
+                <h6>English score</h6>
+                <em>{{exam.score.totals[0]}}</em> / 800
+              </div>
+              <div class="score-sum">
+                <h6>Math score</h6>
+                <em>{{exam.score.totals[1]}}</em> / 800
+              </div>
+              <div class="score-sum">
+                <h6>Overall score</h6>
+                <em>{{exam.score.totals[0] + exam.score.totals[1]}}</em><span> / 1600</span>
+              </div>
             </div>
-            <div class="score-sum">
-              <h6>Math score</h6>
-              <em>{{exam.score.math}}</em> / 1600
-            </div>
-            <div class="score-sum">
-              <h6>Overall score</h6>
-              <em>{{exam.score.overall}}</em> / 1600
-            </div>
-          </div>
-        </template>
-        <h4 v-else>
-          No scores for this exam yet!
-        </h4>
-      </section>
+          </template>
+          <h4 v-else>
+            You missed the exam.
+          </h4>
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -62,14 +69,8 @@ export default {
     }
   },
   async fetch() {
+    // console.log(this.$route.params);
     this.student = await this.$axios.$get(`students/${this.$route.params.id}`);
-    for (const exam of this.student.exams) {
-      if (exam.score) {
-        exam.score.overall = exam.score.sections.reduce((acc, val) => acc + val.score, 0);
-        exam.score.english = exam.score.sections[0].score + exam.score.sections[1].score;
-        exam.score.math = exam.score.sections[2].score + exam.score.sections[3].score;
-      }
-    }
   }
 }
 </script>
@@ -81,6 +82,7 @@ export default {
     border-radius: 5px;
     background: #fb6c30;
     color: white;
+    font-size: 1.3rem;
   }
   .exam {
     margin-top: 50px;
@@ -103,6 +105,12 @@ export default {
     font-weight: 500;
 
     border-bottom: 1px solid #ccc;
+
+    th {
+      font-size: 1rem;
+      font-weight: 500;
+      z-index: 99999;
+    }
   }
   tr, thead {
     & > *:nth-child(1) {
@@ -126,21 +134,26 @@ export default {
     margin-top: 30px;
     font-size: 3rem;
     text-align: center;
-    font-weight: 300;
+    font-weight: 400;
 
     h6 {
       font-size: 1.3rem;
-      font-weight: 500;
-      margin-bottom: -2px;
+      font-weight: 400;
+      // margin-bottom: -2px;
     }
     em {
       font-style: normal;
       color: #fb6c30;
       font-weight: 600;
     }
+    // span {
+    //   font-size: .7em;
+    // }
   }
   .student-name {
     margin-bottom: -20px;
+    font-size: 1.7rem;
+    font-weight: 500;
   }
   .score-sum-wrap {
     display: flex;
