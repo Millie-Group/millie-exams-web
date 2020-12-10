@@ -104,12 +104,14 @@ export default {
       isUpdated: false
     }
   },
-  async fetch() {
-    this.students = await this.$axios.$get('students');
-    // this.fetchEdit();
-  },
-  mounted() {
+  async mounted() {
+    this.students = await this.$axios.$get('students', {
+      headers: {
+        Authorization: 'Bearer ' + this.$store.state.auth.pw
+      }
+    });
     this.fetchEdit();
+    // this.fetchEdit();
   },
   methods: {
     getUnique(arr, field) {
@@ -117,7 +119,11 @@ export default {
     },
     async fetchEdit() {
       if (this.$route.query.edit) {
-        const data = await this.$axios.$get(`exams/${this.$route.query.edit}`);
+        const data = await this.$axios.$get(`exams/${this.$route.query.edit}`, {
+          headers: {
+            Authorization: 'Bearer ' + this.$store.state.auth.pw
+          }
+        });
 
         this.selectedStudents = [];
         this.studentsLength = 0;
@@ -138,9 +144,17 @@ export default {
       const {id} = this.edit
         ? await this.$axios.$put(`exams/${this.edit}`, {
           name: this.name
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + this.$store.state.auth.pw
+          }
         })
         : await this.$axios.$post('exams', {
           name: this.name
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + this.$store.state.auth.pw
+          }
         });
 
       const copy = [...this.scores];
@@ -149,15 +163,27 @@ export default {
         studentsScores.totals = studentsScores.totals.map(x => +x);
       }
 
-      const stReq = await this.$axios.$post('students', st);
+      const stReq = await this.$axios.$post('students', st, {
+        headers: {
+          Authorization: 'Bearer ' + this.$store.state.auth.pw
+        }
+      });
 
       st = st.map((x) => {
         return stReq.find(y => y.email === x.email);
       });
 
-      await this.$axios.$post(`exams/${id}/students`, st.map(x => x.id));
+      await this.$axios.$post(`exams/${id}/students`, st.map(x => x.id), {
+        headers: {
+          Authorization: 'Bearer ' + this.$store.state.auth.pw
+        }
+      });
 
-      await this.$axios.$put(`exams/${id}/scores`, Object.entries(st).map(([k, v]) => ({student: v.id, score: copy[k]})));
+      await this.$axios.$put(`exams/${id}/scores`, Object.entries(st).map(([k, v]) => ({student: v.id, score: copy[k]})), {
+        headers: {
+          Authorization: 'Bearer ' + this.$store.state.auth.pw
+        }
+      });
 
       if (this.edit) {
         window.location.reload(true);
@@ -172,7 +198,11 @@ export default {
       if (!confirmed) return;
       // console.log(this.emailSchool);
 
-      await this.$axios.$post('send-emails', {school: this.emailSchool, exam: this.edit});
+      await this.$axios.$post('send-emails', {school: this.emailSchool, exam: this.edit}, {
+        headers: {
+          Authorization: 'Bearer ' + this.$store.state.auth.pw
+        }
+      });
 
       window.location.reload(true);
     },

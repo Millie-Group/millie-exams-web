@@ -22,8 +22,12 @@ export default {
       exams: []
     }
   },
-  async fetch() {
-    this.exams = await this.$axios.$get('exams');
+  async mounted() {
+    this.exams = await this.$axios.$get('exams', {
+      headers: {
+        Authorization: 'Bearer ' + this.$store.state.auth.pw
+      }
+    });
   }
 }
 </script>

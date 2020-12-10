@@ -2,6 +2,6 @@ import VuexPersistence from 'vuex-persist'
 
 export default ({store}) => {
   new VuexPersistence({
-    modules: ['question-submit', 'test']
+    modules: ['auth']
   }).plugin(store);
 }
