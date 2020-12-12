@@ -1,4 +1,4 @@
-service: ensemble-web
+service: millie-exams-web
 
 frameworkVersion: '2'
 
@@ -41,7 +41,6 @@ plugins:
   - serverless-plugin-warmup
   - serverless-plugin-tracing
   - serverless-apigw-binary
-  - serverless-offline
   - serverless-s3-sync
 
 custom:

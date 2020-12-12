@@ -1,0 +1,21 @@
+on:
+  push:
+    tags:
+    - 'stage'
+jobs:
+  serverless-deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with: 
+          node-version: 12
+      - run: npm i -g yarn
+      - run: yarn install
+      - run: |
+          touch .env
+          echo "STAGE=staging" >> .env
+          echo "API_URL=${{secrets.STAGE_API_URL}}" >> .env
+          echo "CDN_URL=${{secrets.STAGE_CDN_URL}}" >> .env
+      - run: yarn deploy:credentials --provider aws --key ${{secrets.AWS_ACCESS_KEY_ID}} --secret ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      - run: yarn deploy --stage stage
