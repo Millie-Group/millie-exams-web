@@ -12,17 +12,23 @@
 </template>
 
 <script>
+import {cancelable} from 'cancelable-promise';
 export default {
   data() {
     return {
       pw: '',
       correct: false,
+      promise: null
     }
   },
   watch: {
     pw: {
-      async handler(n) {
-        this.correct = await this.$axios.$post('/login', {pw: n}, {progress: false});
+      handler(n) {
+        if (this.promise) this.promise.cancel();
+        this.promise = cancelable(this.$axios.$post('/login', {pw: n}, {progress: false}));
+        this.promise.then((x) => {
+          this.correct = x
+        });
         this.$store.commit('auth/set', n)
       }
     }
