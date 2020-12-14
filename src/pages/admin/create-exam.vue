@@ -27,7 +27,7 @@
     <!-- {{getUnique(selectedStudents, 'schoolRel.id')}} -->
 
     <div v-if="!isUpdated && selectedStudents.length" class="file-submit-wrap" style="margin-top: 30px;">
-      <SchoolEmailSelect :options="getUnique(selectedStudents.map(x => x.schoolRel), 'id')" :selected.sync="emailSchool" />
+      <SchoolEmailSelect :options="getUnique(selectedStudents.map(x => x.schoolRel).filter(x => x), 'id')" :selected.sync="emailSchool" />
       <button class="submit-btn" @click="sendEmails">
         Send emails
       </button>
@@ -129,7 +129,7 @@ export default {
         this.studentsLength = 0;
 
         this.$nextTick(() => {
-          this.selectedStudents = data.students.map(x => x.student).map(x => ({...x, school: x.school.name, schoolRel: x.school}));
+          this.selectedStudents = data.students.map(x => x.student).map(x => ({...x, school: x.school?.name, schoolRel: x.school}));
           this.studentsLength = this.selectedStudents.length + 1;
           this.scores = data.students.map(x => x.score);
           this.name = data.name;
@@ -212,23 +212,22 @@ export default {
     loadCSV(text) {
       this.isUpdated = true;
       const csv = window.CSV.parse(text);
-      const headers = csv[0].map(x => x.trim());
-      let lastSchool = null;
+      const headers = csv[0].map(x => x.trim().toLowerCase());
 
       const columnIdx = {
-        present: headers.findIndex(x => x.startsWith('Present')),
-        email: headers.findIndex(x => x.startsWith('Email')),
-        name: headers.findIndex(x => x.startsWith('Student Name')),
-        school: headers.findIndex(x => x.startsWith('School Name')),
+        present: headers.findIndex(x => x.startsWith('present')),
+        email: headers.findIndex(x => x.startsWith('email')),
+        name: headers.findIndex(x => x.startsWith('student name')),
+        school: headers.findIndex(x => x.startsWith('school id')),
         correctCounts: [
-          headers.findIndex(x => x.startsWith('Section 1')),
-          headers.findIndex(x => x.startsWith('Section 2')),
-          headers.findIndex(x => x.startsWith('Section 3')),
-          headers.findIndex(x => x.startsWith('Section 4'))
+          headers.findIndex(x => x.startsWith('section 1')),
+          headers.findIndex(x => x.startsWith('section 2')),
+          headers.findIndex(x => x.startsWith('section 3')),
+          headers.findIndex(x => x.startsWith('section 4'))
         ],
         totals: [
-          headers.findIndex(x => x.startsWith('English')),
-          headers.findIndex(x => x.startsWith('Math'))
+          headers.findIndex(x => x.startsWith('english')),
+          headers.findIndex(x => x.startsWith('math'))
         ]
       }
       const body = csv.slice(1);
@@ -239,10 +238,7 @@ export default {
           obj[name] = row[idx]
         }
         if (row[columnIdx.school]) {
-          obj.school = row[columnIdx.school];
-          lastSchool = obj.school;
-        } else {
-          obj.school = lastSchool;
+          obj.school = '' + row[columnIdx.school];
         }
         return obj;
       });

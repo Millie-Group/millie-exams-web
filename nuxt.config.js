@@ -19,21 +19,19 @@ module.exports = {
   ** See https://nuxtjs.org/api/configuration-head
   */
   head: {
-    title: 'Millie Exams',
+    title: 'Study With Millie',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      {hid: 'description', name: 'description', content: 'Your go-to place for test prep resources. Answer exam questions and try your hand at SAT, ACT, TOEFL, CAE, A Levels, & more. Join with your school now!' },
-      {hid: 'robots', name: 'robots', content: process.env.STAGE === 'production' ? 'all' : 'none'},
+      {hid: 'description', name: 'description', content: '' },
+      {hid: 'robots', name: 'robots', content: 'none'},
       {hid: 'author', name: 'author', content: 'Jude (Mateusz Sowiński) Hunter'},
-      {hid: 'keywords', name: 'keywords', content: 'test prep, exams, practice, free, schools, SAT, SAT Math, SAT Reading, SAT Writing, ACT'}
+      {hid: 'keywords', name: 'keywords', content: ''}
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/static/favicon.ico' },
-      // Montserrat
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@400&family=Roboto:wght@400;500&display=swap' },
       {rel: 'stylesheet', href: 'https://unpkg.com/boxicons@2.0.5/css/boxicons.min.css'},
-      {rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css'}
     ],
     script: [
       {
