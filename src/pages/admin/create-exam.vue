@@ -133,6 +133,7 @@ export default {
           this.studentsLength = this.selectedStudents.length + 1;
           this.scores = data.students.map(x => x.score);
           this.name = data.name;
+          this.date = new Date(data.date);
         });
       }
     },
@@ -254,9 +255,9 @@ export default {
 
         // console.log()
 
-        if (['yes', 'true'].includes(row[columnIdx.present].toLowerCase()))
+        if (['yes', 'true', 'y'].includes(row[columnIdx.present].toLowerCase()))
           obj.present = true;
-        else if (['no', 'false'].includes(row[columnIdx.present].toLowerCase()))
+        else if (['no', 'false', 'n'].includes(row[columnIdx.present].toLowerCase()))
           obj.present = false;
         else throw new Error('Incorrect CSV data for the "Present?" column');
 
@@ -326,6 +327,10 @@ export default {
       }
     },
     name(n, o) {
+      if (o)
+        this.isUpdated = true
+    },
+    date(n, o) {
       if (o)
         this.isUpdated = true
     }
