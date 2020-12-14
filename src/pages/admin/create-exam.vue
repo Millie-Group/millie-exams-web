@@ -92,7 +92,7 @@ export default {
   data() {
     return {
       name: '',
-      date: '',
+      date: null,
       email: '',
       students: [],
       selectedStudents: [],
@@ -143,14 +143,16 @@ export default {
 
       const {id} = this.edit
         ? await this.$axios.$put(`exams/${this.edit}`, {
-          name: this.name
+          name: this.name,
+          date: this.date
         }, {
           headers: {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
         })
         : await this.$axios.$post('exams', {
-          name: this.name
+          name: this.name,
+          date: this.date
         }, {
           headers: {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
