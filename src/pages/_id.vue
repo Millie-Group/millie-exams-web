@@ -68,9 +68,10 @@ export default {
       student: null
     }
   },
-  async fetch() {
+  async mounted() {
     // console.log(this.$route.params);
-    this.student = await this.$axios.$get(`students/${this.$route.params.id}`);
+    if (this.$route.params.id)
+      this.student = await this.$axios.$get(`students/${this.$route.params.id}`);
   }
 }
 </script>

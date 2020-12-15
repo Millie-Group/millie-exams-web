@@ -64,7 +64,7 @@ export default {
       exams: null
     }
   },
-  async fetch() {
+  async mounted() {
     // console.log(this.$route.params);
     const [school, exams] = await this.$axios.$get(`schools/${this.$route.params.id}`);
     this.school = school;
