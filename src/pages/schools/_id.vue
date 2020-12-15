@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="school && exams">
     <!-- {{school}}
     {{exams}} -->
     <div class="page wide-padded-container">
@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       school: null,
-      exams: null
+      exams: []
     }
   },
   async mounted() {

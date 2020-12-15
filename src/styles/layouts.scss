@@ -13,6 +13,7 @@ html {
 .padded-container {
   @extend .container;
   @include padded-sides(15px, 30px);
+  margin-bottom: 50px;
 }
 .wide-padded-container {
   @include margin-center;
