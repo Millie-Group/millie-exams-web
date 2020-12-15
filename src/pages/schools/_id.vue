@@ -81,7 +81,7 @@ export default {
 <style lang="scss" scoped>
 .exam-name {
   padding: .4em .8em;
-  margin: 0 -.8em .8em;
+  margin: 0 0 .8em;
   border-radius: 5px;
   background: #fb6c30;
   color: white;
@@ -89,6 +89,8 @@ export default {
 }
 .exam {
   margin-top: 50px;
+  overflow-x: auto;
+  width: 100%;
 }
 .page {
   margin-top: 10px;
@@ -167,7 +169,7 @@ svg {
 }
 
 .table-wrap {
-  margin: 0 -.7em;
+  margin: 0 0;
 }
 table {
   position: relative;

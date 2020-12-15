@@ -337,6 +337,8 @@ export default {
 <style lang="scss" scoped>
 .table-wrap {
   margin: 0 -.7em;
+  width: calc(100% + 1.4em);
+  overflow-x: auto;
 }
 table {
   position: relative;
