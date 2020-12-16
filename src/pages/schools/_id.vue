@@ -28,6 +28,9 @@
                   <th>
                     Math
                   </th>
+                  <th>
+                    Total
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -43,6 +46,9 @@
                   </td>
                   <td v-for="i in 2" :key="'td2' + i">
                     {{student.score.totals[i-1]}}
+                  </td>
+                  <td>
+                    {{student.score.totals[0] + student.score.totals[1]}}
                   </td>
                 </tr>
               </tbody>
