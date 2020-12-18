@@ -207,11 +207,17 @@ export default {
       if (!confirmed) return;
       // console.log(this.emailSchool);
 
-      await this.$axios.$post('send-emails', {school: this.emailSchool, exam: this.edit}, {
-        headers: {
-          Authorization: 'Bearer ' + this.$store.state.auth.pw
-        }
-      });
+      while (true) {
+        const result = await this.$axios.$post('send-emails', {
+          school: this.emailSchool,
+          exam: this.edit,
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + this.$store.state.auth.pw
+          }
+        });
+        if (result !== 'continue') break;
+      }
 
       window.location.reload(true);
     },
