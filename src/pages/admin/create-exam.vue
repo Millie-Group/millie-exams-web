@@ -8,11 +8,24 @@
       <date-picker v-model="date" type="datetime" />
     </div>
 
+    <div v-if="edit">
+      Sign up link: https://studywithmillie.milliegroup.com/signup?exam={{edit}}
+      <br>
+    </div>
+    <div v-if="edit">
+      Sign up Exam ID: {{edit}}
+      <br><br>
+    </div>
+
+    <ExamState v-if="$route.query.edit && state" :state="state" :exam-id="+$route.query.edit" />
+
+    <ExamPageFiles v-if="$route.query.edit" :files="files" :exam-id="+$route.query.edit" />
+
     <div class="file-submit-wrap">
 
-      <FileInput @load="loadCSV" />
+      <FileInput v-if="edit" @load="loadCSV" />
 
-      <button v-if="selectedStudents.length && !isScoresIncorrect && isUpdated" class="submit-btn" @click="submit">
+      <button v-if="!isScoresIncorrect && isUpdated" class="submit-btn" @click="submit">
         <template v-if="!edit">
           Create
         </template>
@@ -107,7 +120,9 @@ export default {
       isScoresIncorrect: false,
       edit: this.$route.query.edit,
       emailSchool: null,
-      isUpdated: false
+      isUpdated: false,
+      files: [],
+      state: null
     }
   },
   async mounted() {
@@ -130,6 +145,7 @@ export default {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
         });
+        console.log(data);
 
         this.selectedStudents = [];
         this.studentsLength = 0;
@@ -140,6 +156,8 @@ export default {
           this.scores = data.students.map(x => x.score);
           this.name = data.name;
           this.date = new Date(data.date);
+          this.files = data.ExamFile;
+          this.state = data.state;
         });
       }
     },
@@ -148,23 +166,30 @@ export default {
 
       let st = this.selectedStudents.filter(x => x);
 
-      const {id} = this.edit
-        ? await this.$axios.$put(`exams/${this.edit}`, {
+      let id = null;
+
+      if (!this.edit) {
+        id = (await this.$axios.$post('exams', {
+          name: this.name,
+          date: this.date,
+          state: 'about-to-start'
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + this.$store.state.auth.pw
+          }
+        })).id;
+        await this.$router.replace(`create-exam?edit=${id}`);
+        window.location.reload(true);
+      } else {
+        id = (await this.$axios.$put(`exams/${this.edit}`, {
           name: this.name,
           date: this.date
         }, {
           headers: {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
-        })
-        : await this.$axios.$post('exams', {
-          name: this.name,
-          date: this.date
-        }, {
-          headers: {
-            Authorization: 'Bearer ' + this.$store.state.auth.pw
-          }
-        });
+        })).id
+      }
 
       const copy = [...this.scores];
       for (const studentsScores of copy) {
@@ -335,12 +360,10 @@ export default {
       }
     },
     name(n, o) {
-      if (o)
-        this.isUpdated = true
+      this.isUpdated = true
     },
     date(n, o) {
-      if (o)
-        this.isUpdated = true
+      this.isUpdated = true
     }
   }
 }
@@ -457,11 +480,15 @@ h1 {
   padding: .3em .6em;
   // margin-top: 20px;
   // margin-bottom: 30px;
-  margin-left: 15px;
+  // margin-left: 15px;
 }
 
 .file-submit-wrap {
   @include flex-center(v);
+
+  & > * + * {
+    margin-left: 15px;
+  }
 }
 
 .incorrect {

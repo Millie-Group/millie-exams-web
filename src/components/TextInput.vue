@@ -1,5 +1,5 @@
 <template>
-  <input v-model="val_" v-bind="$attrs">
+  <input v-bind="$attrs" :value="val" @input="x => $emit('update:val', x.target.value)">
 </template>
 
 <script>

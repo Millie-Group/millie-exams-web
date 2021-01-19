@@ -2,59 +2,70 @@
   <div>
     <div v-if="student" class="page padded-container">
       <Logo />
+      <!-- {{student}} -->
       <h1 class="student-name">
         {{student.name}}
       </h1>
+      <SignUpExisting />
       <div v-for="exam in student.exams" :key="exam.exam.id">
         <section class="exam">
           <h2 class="exam-name">
             {{exam.exam.name}}
           </h2>
-          <template v-if="exam.score && exam.score.present">
-            <table>
-              <thead>
-                <tr>
-                  <th>Section</th>
-                  <th>Correct answers</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(count, idx) in exam.score.correctCounts" :key="idx">
-                  <td>
-                    {{
-                      [
-                        'Section 1: Reading',
-                        'Section 2: Writing',
-                        'Section 3: Math No Calculator',
-                        'Section 4: Math Calculator'
-                      ][idx]
-                    }}
-                  </td>
-                  <td>
-                    {{count}} / {{[52, 44, 20, 28][idx]}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <h3>
+            <b style="font-weight: 500">
+              Status:
+            </b>
+            {{statusMsg(exam.exam)}}
+          </h3>
+          <StudentPageFiles :files="exam.exam.files" :show-upload="exam.exam.state === 'in-progress'" :exam-id="exam.exam.id" />
+          <div v-if="!exam.exam.state || exam.exam.state === 'scored'">
+            <template v-if="exam.score && exam.score.present">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Section</th>
+                    <th>Correct answers</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(count, idx) in exam.score.correctCounts" :key="idx">
+                    <td>
+                      {{
+                        [
+                          'Section 1: Reading',
+                          'Section 2: Writing',
+                          'Section 3: Math No Calculator',
+                          'Section 4: Math Calculator'
+                        ][idx]
+                      }}
+                    </td>
+                    <td>
+                      {{count}} / {{[52, 44, 20, 28][idx]}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-            <div class="score-sum-wrap">
-              <div class="score-sum">
-                <h6>English score</h6>
-                <em>{{exam.score.totals[0]}}</em> / 800
+              <div class="score-sum-wrap">
+                <div class="score-sum">
+                  <h6>English score</h6>
+                  <em>{{exam.score.totals[0]}}</em> / 800
+                </div>
+                <div class="score-sum">
+                  <h6>Math score</h6>
+                  <em>{{exam.score.totals[1]}}</em> / 800
+                </div>
+                <div class="score-sum">
+                  <h6>Overall score</h6>
+                  <em>{{exam.score.totals[0] + exam.score.totals[1]}}</em><span> / 1600</span>
+                </div>
               </div>
-              <div class="score-sum">
-                <h6>Math score</h6>
-                <em>{{exam.score.totals[1]}}</em> / 800
-              </div>
-              <div class="score-sum">
-                <h6>Overall score</h6>
-                <em>{{exam.score.totals[0] + exam.score.totals[1]}}</em><span> / 1600</span>
-              </div>
-            </div>
-          </template>
-          <h4 v-else>
-            You missed the exam.
-          </h4>
+            </template>
+            <h4 v-else style="margin-top: 15px">
+              You missed the exam. Need help? Reach out to us at studywithmillie@milliegroup.com
+            </h4>
+          </div>
         </section>
       </div>
     </div>
@@ -66,6 +77,16 @@ export default {
   data() {
     return {
       student: null
+    }
+  },
+  methods: {
+    statusMsg(exam) {
+      return {
+        'about-to-start': 'The exam hasn\'t started yet',
+        'in-progress': 'The exam is in progress',
+        finished: 'The exam has finished',
+        scored: 'The exam has been scored'
+      }[exam.state] || 'The exam has been scored'
     }
   },
   async mounted() {
@@ -154,7 +175,7 @@ export default {
     // }
   }
   .student-name {
-    margin-bottom: -20px;
+    // margin-bottom: -20px;
     font-size: 1.7rem;
     font-weight: 500;
   }
