@@ -117,8 +117,7 @@ export default {
 
       await this.$axios.$post(url, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: 'Bearer ' + this.$store.state.auth.pw
+          'Content-Type': 'multipart/form-data'
         }
       });
 
