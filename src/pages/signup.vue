@@ -34,7 +34,7 @@ export default {
     async submit() {
       await this.$axios.$post(`exams/${this.$route.query.exam}/signup`, {
         email: this.form.email,
-        name: this.name1 + ' ' + this.name2
+        name: this.form.name1 + ' ' + this.form.name2
       });
       this.isSubmit = true;
     }
