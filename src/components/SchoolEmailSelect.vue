@@ -1,7 +1,13 @@
 <template>
   <div class="select-wrap">
     <select v-model="selected_">
-      <option v-for="opt in options" :key="opt.id" :value="opt.id">
+      <option value="all">
+        ALL
+      </option>
+      <option value="selection">
+        SELECTION
+      </option>
+      <option v-for="opt in sorted" :key="opt.id" :value="opt.id">
         {{opt.name}}
       </option>
     </select>
@@ -10,6 +16,7 @@
 </template>
 
 <script>
+import { sortBy } from 'lodash';
 export default {
   props: {
     options: Array,
@@ -18,6 +25,12 @@ export default {
   data() {
     return {
       selected_: null
+    }
+  },
+  computed: {
+    sorted() {
+      // if (!this.selected) return;
+      return sortBy([...this.options], 'name');
     }
   },
   watch: {

@@ -2,6 +2,9 @@
   <div class="padded-container">
     <Logo />
     <div class="new-btn-wrap">
+      <nuxt-link to="/admin/search">
+        <i class="bx bx-search" style="font-size: 1.5rem; margin-right: -1.5rem" />
+      </nuxt-link>
       <nuxt-link to="/admin/create-exam" class="new-btn">
         Create a new exam
         <i class="bx bx-right-arrow-alt" />
@@ -69,7 +72,7 @@ export default {
   border-radius: 5px;
   color: white;
   background: #ff4b00;
-  margin: 0 auto 30px;
+  margin: 0 auto;
 
   @include flex-center(v);
   i {
@@ -79,6 +82,7 @@ export default {
 }
 
 .new-btn-wrap {
-  @include flex-center(h);
+  @include flex-center(vh);
+  margin-bottom: 30px;
 }
 </style>

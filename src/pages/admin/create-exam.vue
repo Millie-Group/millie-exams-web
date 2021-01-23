@@ -2,6 +2,7 @@
   <div class="wide-padded-container">
     <Logo />
     <BackButton />
+    <DeleteExam :exam-id="+$route.query.edit" />
     <div class="name-input-wrap">
       <!-- <h1>Examination session name</h1> -->
       <TextInput :val.sync="name" placeholder="Name" />
@@ -41,6 +42,10 @@
 
     <div v-if="!isUpdated && selectedStudents.length" class="file-submit-wrap" style="margin-top: 30px;">
       <SchoolEmailSelect :options="getUnique(selectedStudents.map(x => x.schoolRel).filter(x => x), 'id')" :selected.sync="emailSchool" />
+      <label>
+        <input v-model="forceSend" type="checkbox" style="margin-right: 5px">
+        Force Send to All
+      </label>
       <button class="submit-btn" @click="sendEmails">
         Send emails
       </button>
@@ -50,6 +55,7 @@
       <table>
         <thead>
           <tr>
+            <th v-if="emailSchool === 'selection'" class="selection-check" />
             <th>Name</th>
             <th>School</th>
             <th>Present?</th>
@@ -69,6 +75,9 @@
         </thead>
         <tbody>
           <tr v-for="idx in selectedStudents.length" :key="'tr' + idx" class="student-row" :class="[scores[idx-1].isIncorrect && 'incorrect']">
+            <td v-if="emailSchool === 'selection'" class="selection-check">
+              <input v-model="selection" type="checkbox" :value="selectedStudents[idx-1].id">
+            </td>
             <td>
               <ExamStudentInfo
                 :students="students"
@@ -122,7 +131,9 @@ export default {
       emailSchool: null,
       isUpdated: false,
       files: [],
-      state: null
+      state: null,
+      selection: [],
+      forceSend: false
     }
   },
   async mounted() {
@@ -145,7 +156,6 @@ export default {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
         });
-        console.log(data);
 
         this.selectedStudents = [];
         this.studentsLength = 0;
@@ -232,16 +242,35 @@ export default {
       if (!confirmed) return;
       // console.log(this.emailSchool);
 
-      while (true) {
+      const sendEmailsToSchool = async (id) => {
         const result = await this.$axios.$post('send-emails', {
-          school: this.emailSchool,
+          school: id || undefined,
           exam: this.edit,
+          selection: this.id ? undefined : this.selection,
+          force: this.forceSend ? 'true' : 'false'
         }, {
           headers: {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
         });
-        if (result !== 'continue') break;
+        return result;
+      }
+
+      for (const school of
+        this.emailSchool === 'all'
+          ? this.getUnique(this.selectedStudents.map(x => x.schoolRel).filter(x => x), 'id').map(x => x.id)
+          : (
+            this.emailSchool === 'selection'
+              ? [null]
+              : [this.emailSchool]
+          )
+      ) {
+      // eslint-disable-next-line no-labels
+        inner:
+        while (true) {
+          // eslint-disable-next-line no-labels
+          if (await sendEmailsToSchool(school) !== 'continue' || this.forceSend) break inner;
+        }
       }
 
       window.location.reload(true);
@@ -360,10 +389,12 @@ export default {
       }
     },
     name(n, o) {
-      this.isUpdated = true
+      if (o)
+        this.isUpdated = true
     },
     date(n, o) {
-      this.isUpdated = true
+      if (o)
+        this.isUpdated = true
     }
   }
 }
@@ -494,5 +525,11 @@ h1 {
 .incorrect {
   background: #ff5100 !important;
   color: white !important;
+}
+
+.selection-check {
+  width: 10px!important;
+  max-width: 10px;
+  min-width: 10px;
 }
 </style>

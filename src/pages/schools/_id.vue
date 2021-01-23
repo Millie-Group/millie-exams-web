@@ -36,7 +36,9 @@
               <tbody>
                 <tr v-for="student in exam.students" :key="student.id" class="student-row">
                   <td>
-                    {{student.student.name}}
+                    <nuxt-link :to="'/' + student.student.access">
+                      {{student.student.name}}
+                    </nuxt-link>
                   </td>
                   <td>
                     <i :class="['bx', student.score.present ? 'bx-check' : 'bx-x']" />

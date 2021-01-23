@@ -1,17 +1,18 @@
 <template>
-  <div>
+  <nuxt-link :to="'/' + selected.access" class="clickable">
     <div v-if="selected == null">
       ERROR
     </div>
     <div v-else-if="~students.findIndex(x => x.email === selected.email)" class="select-wrap">
       <i class="bx bxs-user" />
       <i v-if="(score || {}).isChanged" class="bx bxs-pencil" />
+      <i v-if="(score || {}).isEmailOpened != null" class="bx" :class="[(score || {}).isEmailOpened ? 'bx-show' : 'bxs-hide']" />
       {{selected.name}} ({{selected.email}})
     </div>
     <span v-else>
       {{selected.name}} ({{selected.email}})
     </span>
-  </div>
+  </nuxt-link>
 </template>
 
 <script>
@@ -43,5 +44,8 @@ select {
     color: #555;
     // transform: translateY(-50%);
   }
+}
+.clickable {
+  cursor: pointer;
 }
 </style>
