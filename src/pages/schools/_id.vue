@@ -41,7 +41,7 @@
                     </nuxt-link>
                   </td>
                   <td>
-                    <i :class="['bx', student.score.present ? 'bx-check' : 'bx-x']" />
+                    <i :class="['bx', student.score && student.score.present ? 'bx-check' : 'bx-x']" />
                   </td>
                   <td v-for="i in 4" :key="'td1' + i">
                     {{student.score.correctCounts[i-1]}}
