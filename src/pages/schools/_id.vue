@@ -76,7 +76,8 @@ export default {
     // console.log(this.$route.params);
     const [school, exams] = await this.$axios.$get(`schools/${this.$route.params.id}`);
     this.school = school;
-    this.exams = exams.map(x => ({...x, students: _.sortBy(x.students, ['score.present', 'student.name']).reverse()}));
+    this.exams = exams.map(x => ({...x, students: _.sortBy(x.students, ['score.present', 'student.name']).reverse()}))
+      .filter(x => x.state === 'scored');
   },
   // methods: {
   //   sorted() {
