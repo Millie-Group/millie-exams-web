@@ -317,9 +317,9 @@ export default {
 
         // console.log()
 
-        if (['yes', 'true', 'y'].includes(row[columnIdx.present].toLowerCase()))
+        if (['yes', 'true', 'y'].includes(row[columnIdx.present].toLowerCase().trim()))
           obj.present = true;
-        else if (['no', 'false', 'n'].includes(row[columnIdx.present].toLowerCase()))
+        else if (['no', 'false', 'n', ''].includes(row[columnIdx.present].toLowerCase().trim()))
           obj.present = false;
         else throw new Error('Incorrect CSV data for the "Present?" column');
 
