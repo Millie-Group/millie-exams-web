@@ -7,107 +7,21 @@
       <!-- <h1>Examination session name</h1> -->
       <TextInput :val.sync="name" placeholder="Name" />
       <date-picker v-model="date" type="datetime" />
+      <button v-if="isUpdated" class="submit-btn" @click="submit">
+        {{edit ? 'Update' : 'Create'}}
+      </button>
     </div>
 
     <div v-if="edit">
-      Sign up link: https://studywithmillie.milliegroup.com/signup?exam={{edit}}
+      Sign up link (auto-distribute students to rooms): https://studywithmillie.milliegroup.com/signup?exam={{edit}}
       <br>
     </div>
-    <div v-if="edit">
-      Sign up Exam ID: {{edit}}
-      <br><br>
-    </div>
 
-    <ExamState v-if="$route.query.edit && state" :state="state" :exam-id="+$route.query.edit" />
-
-    <ExamPageFiles v-if="$route.query.edit" :files="files" :exam-id="+$route.query.edit" />
-
-    <div class="file-submit-wrap">
-
-      <FileInput v-if="edit" @load="loadCSV" />
-
-      <button v-if="!isScoresIncorrect && isUpdated" class="submit-btn" @click="submit">
-        <template v-if="!edit">
-          Create
-        </template>
-        <template v-else>
-          Update
-        </template>
-      </button>
-
-    </div>
-
-    <!-- {{selectedStudents}} -->
-    <!-- {{getUnique(selectedStudents, 'schoolRel.id')}} -->
-
-    <div v-if="!isUpdated && selectedStudents.length" class="file-submit-wrap" style="margin-top: 30px;">
-      <SchoolEmailSelect :options="getUnique(selectedStudents.map(x => x.schoolRel).filter(x => x), 'id')" :selected.sync="emailSchool" />
-      <label>
-        <input v-model="forceSend" type="checkbox" style="margin-right: 5px">
-        Force Send to All
-      </label>
-      <button class="submit-btn" @click="sendEmails">
-        Send emails
-      </button>
-    </div>
-
-    <div v-if="selectedStudents.length" class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th v-if="emailSchool === 'selection'" class="selection-check" />
-            <th>Name</th>
-            <th>School</th>
-            <th>Present?</th>
-            <th v-for="i in 4" :key="'th' + i">
-              Section {{i}}
-            </th>
-            <th>
-              English
-            </th>
-            <th>
-              Math
-            </th>
-            <th>
-              Total
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="idx in selectedStudents.length" :key="'tr' + idx" class="student-row" :class="[scores[idx-1].isIncorrect && 'incorrect']">
-            <td v-if="emailSchool === 'selection'" class="selection-check">
-              <input v-model="selection" type="checkbox" :value="selectedStudents[idx-1].id">
-            </td>
-            <td>
-              <ExamStudentInfo
-                :students="students"
-                :score="scores[idx-1]"
-                :selected.sync="selectedStudents[idx-1]"
-              />
-            </td>
-            <td><a v-if="selectedStudents[idx-1].schoolRel" :href="'/schools/' + selectedStudents[idx-1].schoolRel.access" target="_blank">{{selectedStudents[idx-1].school}}</a><span v-else>{{selectedStudents[idx-1].school}}</span></td>
-            <td>
-              <i :class="['bx', scores[idx-1].present ? 'bx-check' : 'bx-x']" />
-            </td>
-            <td v-for="i in 4" :key="'td1' + i">
-              {{scores[idx-1].correctCounts[i-1]}}
-            </td>
-            <td v-for="i in 2" :key="'td2' + i">
-              {{scores[idx-1].totals[i-1]}}
-            </td>
-            <td>
-              {{scores[idx-1].totals[0] + scores[idx-1].totals[1]}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- <ExamStudentSelect
-      v-for="idx in studentsLength"
-      :key="idx"
-      :students="students"
-      :selected.sync="selectedStudents[idx-1]"
-    /> -->
+    <!-- {{rooms}} -->
+    <details v-for="(room, idx) in rooms" :key="room.id">
+      <summary>Room {{idx + 1}}</summary>
+      <CreateExamRoom :students="students" :room.sync="rooms[idx]" />
+    </details>
   </div>
 </template>
 
@@ -121,19 +35,10 @@ export default {
     return {
       name: '',
       date: null,
-      email: '',
       students: [],
-      selectedStudents: [],
-      studentsLength: 1,
-      scores: [],
-      isScoresIncorrect: false,
       edit: this.$route.query.edit,
-      emailSchool: null,
       isUpdated: false,
-      files: [],
-      state: null,
-      selection: [],
-      forceSend: false
+      rooms: []
     }
   },
   async mounted() {
@@ -161,21 +66,22 @@ export default {
         this.studentsLength = 0;
 
         this.$nextTick(() => {
-          this.selectedStudents = data.students.map(x => x.student).map(x => ({...x, school: x.school?.name, schoolRel: x.school}));
-          this.studentsLength = this.selectedStudents.length + 1;
-          this.scores = data.students.map(x => x.score);
           this.name = data.name;
           this.date = new Date(data.date);
-          this.files = data.ExamFile;
-          this.state = data.state;
+          this.rooms = data.rooms.map((x) => {
+            const selectedStudents = x.students.map(x => x.student).map(x => ({...x, school: x.school?.name, schoolRel: x.school}));
+            return {
+              ...x,
+              selectedStudents,
+              studentsLength: selectedStudents.length + 1,
+              scores: x.students.map(x => x.score),
+              meta: x.meta || {}
+            }
+          })
         });
       }
     },
     async submit() {
-      if (this.isScoresIncorrect) return;
-
-      let st = this.selectedStudents.filter(x => x);
-
       let id = null;
 
       if (!this.edit) {
@@ -189,7 +95,7 @@ export default {
           }
         })).id;
         await this.$router.replace(`create-exam?edit=${id}`);
-        window.location.reload(true);
+        window.location.reload();
       } else {
         id = (await this.$axios.$put(`exams/${this.edit}`, {
           name: this.name,
@@ -198,42 +104,10 @@ export default {
           headers: {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
-        })).id
-      }
+        })).id;
 
-      const copy = [...this.scores];
-      for (const studentsScores of copy) {
-        studentsScores.correctCounts = studentsScores.correctCounts.map(x => +x);
-        studentsScores.totals = studentsScores.totals.map(x => +x);
-      }
-
-      const stReq = await this.$axios.$post('students', st, {
-        headers: {
-          Authorization: 'Bearer ' + this.$store.state.auth.pw
-        }
-      });
-
-      st = st.map((x) => {
-        return stReq.find(y => y.email === x.email);
-      });
-
-      await this.$axios.$post(`exams/${id}/students`, st.map(x => x.id), {
-        headers: {
-          Authorization: 'Bearer ' + this.$store.state.auth.pw
-        }
-      });
-
-      await this.$axios.$put(`exams/${id}/scores`, Object.entries(st).map(([k, v]) => ({student: v.id, score: copy[k]})), {
-        headers: {
-          Authorization: 'Bearer ' + this.$store.state.auth.pw
-        }
-      });
-
-      if (this.edit) {
-        window.location.reload(true);
-      } else {
         await this.$router.replace(`create-exam?edit=${id}`);
-        window.location.reload(true);
+        window.location.reload();
       }
     },
     async sendEmails() {
@@ -364,37 +238,37 @@ export default {
     }
   },
   watch: {
-    studentsLength: {
-      immediate: true,
-      handler(n) {
-        for (const i of Array(n).keys())
-          this.scores[i] = this.scores[i] || {
-            correctCounts: [],
-            totals: []
-          };
-        this.scores = [...this.scores];
-      }
-    },
-    scores: {
-      deep: true,
-      handler(n) {
-        // const copy = [...this.scores];
-        // for (const studentsScores of copy) {
-        //   for (const section of studentsScores.sections) {
-        //     section.correctCount = +section.correctCount;
-        //     section.score = +section.score;
-        //   }
-        // }
-        // this.scores = [...copy];
-      }
-    },
+    // studentsLength: {
+    //   immediate: true,
+    //   handler(n) {
+    //     for (const i of Array(n).keys())
+    //       this.scores[i] = this.scores[i] || {
+    //         correctCounts: [],
+    //         totals: []
+    //       };
+    //     this.scores = [...this.scores];
+    //   }
+    // },
+    // scores: {
+    //   deep: true,
+    //   handler(n) {
+    //     // const copy = [...this.scores];
+    //     // for (const studentsScores of copy) {
+    //     //   for (const section of studentsScores.sections) {
+    //     //     section.correctCount = +section.correctCount;
+    //     //     section.score = +section.score;
+    //     //   }
+    //     // }
+    //     // this.scores = [...copy];
+    //   }
+    // },
     name(n, o) {
-      if (o)
+      if (o?.length === 0 && n?.length)
         this.isUpdated = true
     },
     date(n, o) {
-      if (o)
-        this.isUpdated = true
+      // if (o !== null)
+      this.isUpdated = true
     }
   }
 }
@@ -485,7 +359,7 @@ table {
   margin-bottom: 30px;
   // margin-top: 50px;
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
 
   & > * + * {
     margin-left: 15px;
@@ -505,7 +379,7 @@ h1 {
   @include flex-center(v);
   border-radius: 5px;
   font-weight: 500;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: #ff4b00;
   background: transparentize($color: #ff4b00, $amount: .94);
   padding: .3em .6em;
@@ -531,5 +405,22 @@ h1 {
   width: 10px!important;
   max-width: 10px;
   min-width: 10px;
+}
+
+summary {
+  outline: none;
+  cursor: pointer;
+  // margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+details {
+  padding: 20px;
+  margin: -20px;
+  margin-top: 20px;
+  &[open] {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 2px 3px rgba(0, 0, 0, .2);
+    // transition: box-shadow .2s ease-in-out;
+  }
 }
 </style>

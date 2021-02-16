@@ -5,6 +5,7 @@
     </div>
     <div v-else-if="~students.findIndex(x => x.email === selected.email)" class="select-wrap">
       <i class="bx bxs-user" />
+      <i class="bx bxs-circle" :style="{color: isOnline ? 'green' : 'red'}" />
       <i v-if="(score || {}).isChanged" class="bx bxs-pencil" />
       <i v-if="(score || {}).isEmailOpened != null" class="bx" :class="[(score || {}).isEmailOpened ? 'bx-show' : 'bxs-hide']" />
       {{selected.name}} ({{selected.email}})
@@ -16,12 +17,20 @@
 </template>
 
 <script>
+import { isWithinInterval, sub } from 'date-fns';
 export default {
   props: {
     selected: Object,
     students: Array,
     score: Object
   },
+  computed: {
+    isOnline() {
+      if (!this.selected.onlineAt) return false;
+      const now = new Date();
+      return isWithinInterval(new Date(this.selected.onlineAt), {start: sub(now, {minutes: 5}), end: now});
+    }
+  }
 }
 </script>
 

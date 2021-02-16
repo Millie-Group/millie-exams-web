@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div v-if="false" class="wrapper">
     <h6>Sign up to an exam</h6>
     <div class="flex">
       <input v-model="id" placeholder="Exam ID">

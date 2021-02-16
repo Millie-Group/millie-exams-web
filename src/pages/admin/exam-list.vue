@@ -13,7 +13,7 @@
 
     <nuxt-link v-for="exam in exams" :key="exam.id" :to="'/admin/create-exam?edit=' + exam.id" class="exam-card">
       <h1>{{exam.name}}</h1>
-      <h2>{{exam.students.length}} students</h2>
+      <h2>{{(exam.rooms).reduce((acc, val) => acc + val.students.length, 0)}} students</h2>
     </nuxt-link>
   </div>
 </template>

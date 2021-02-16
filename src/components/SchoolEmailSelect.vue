@@ -29,7 +29,6 @@ export default {
   },
   computed: {
     sorted() {
-      // if (!this.selected) return;
       return sortBy([...this.options], 'name');
     }
   },
@@ -52,10 +51,13 @@ export default {
 
 <style lang="scss" scoped>
 select {
-  border: 2px solid #ddd;
-  padding: .2em 1.5em .2em .4em;
-  // width: 100%;
+  width: 100%;
+  padding: .4em .9em;
+  font-size: 1.3em;
+  border: 2px solid $primary;
   border-radius: 3px;
+  box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
+  // margin-bottom: 25px;
 }
 .select-wrap {
   position: relative;

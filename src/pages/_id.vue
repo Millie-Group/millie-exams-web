@@ -6,6 +6,11 @@
       <h1 class="student-name">
         {{student.name}}
       </h1>
+      <Hint style="margin: 10px 0 -20px; font-size: 1.1rem">
+        <a href="/static/FAQ.pdf" target="_blank" style="text-decoration: underline; cursor: pointer">
+          FAQ
+        </a>
+      </Hint>
       <SignUpExisting />
       <div v-for="exam in student.exams" :key="exam.exam.id">
         <section class="exam">
@@ -66,6 +71,7 @@
               You missed the exam. Need help? Reach out to us at studywithmillie@milliegroup.com
             </h4>
           </div>
+          <ExamPlace v-if="!exam.exam.state || exam.exam.state === 'scored'" :place="exam.place" />
         </section>
       </div>
     </div>
@@ -76,10 +82,17 @@
 export default {
   data() {
     return {
-      student: null
+      student: null,
+      refreshInterval: null
     }
   },
   methods: {
+    async refresh(progress = false) {
+      if (this.$route.params.id)
+        this.student = await this.$axios.$get(`students/${this.$route.params.id}`, {
+          progress
+        });
+    },
     statusMsg(exam) {
       return {
         'about-to-start': 'The exam hasn\'t started yet',
@@ -89,10 +102,13 @@ export default {
       }[exam.state] || 'The exam has been scored'
     }
   },
-  async mounted() {
-    // console.log(this.$route.params);
-    if (this.$route.params.id)
-      this.student = await this.$axios.$get(`students/${this.$route.params.id}`);
+  mounted() {
+    this.refresh(true);
+    // change to a bigger interval!!!
+    this.refreshInterval = setInterval(this.refresh, 10000);
+  },
+  destroyed() {
+    clearInterval(this.refreshInterval);
   }
 }
 </script>

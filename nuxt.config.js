@@ -75,12 +75,21 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/style-resources',
+    '@nuxtjs/sentry'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {},
+
+  sentry: {
+    dsn: process.env.SENTRY_DSN,
+    disabled: process.env.NODE_ENV === 'development',
+    config: {
+      environment: process.env.STAGE || 'development'
+    }
+  },
 
   styleResources: {
     scss: [

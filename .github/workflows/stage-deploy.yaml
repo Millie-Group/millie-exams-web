@@ -17,5 +17,6 @@ jobs:
           echo "STAGE=staging" >> .env
           echo "API_URL=${{secrets.STAGE_API_URL}}" >> .env
           echo "CDN_URL=${{secrets.STAGE_CDN_URL}}" >> .env
+          echo "SENTRY_DSN=${{secrets.SENTRY_DSN}}" >> .env
       - run: yarn deploy:credentials --provider aws --key ${{secrets.AWS_ACCESS_KEY_ID}} --secret ${{secrets.AWS_SECRET_ACCESS_KEY}}
       - run: yarn deploy --stage stage

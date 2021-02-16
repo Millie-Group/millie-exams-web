@@ -56,6 +56,25 @@
               </tbody>
             </table>
           </div>
+
+          <div class="leaderboards">
+            <h1>
+              <i class="bx bxs-trophy" style="color: gold" />
+              <h1>
+                Leaderboard
+              </h1>
+            </h1>
+            <table>
+              <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
+                <td>
+                  {{s.name}}
+                </td>
+                <td>
+                  {{score.toFixed()}}
+                </td>
+              </tr>
+            </table>
+          </div>
         </section>
       </div>
     </div>
@@ -98,7 +117,7 @@ export default {
 }
 .exam {
   margin-top: 50px;
-  overflow-x: auto;
+  // overflow-x: auto;
   width: 100%;
 }
 .page {
@@ -255,5 +274,28 @@ table {
     }
   }
   max-width: 100%;
+}
+
+.leaderboards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 70px;
+  h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 1.6rem;
+    margin-left: 15px;
+  }
+  i {
+    font-size: 3rem;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+  }
+  table {
+    max-width: 600px;
+  }
 }
 </style>
