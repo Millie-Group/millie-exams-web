@@ -2,54 +2,16 @@
   <div class="page padded-container">
     <Logo />
     <div v-if="!isSubmit">
-      <h1>SIGN UP</h1>
-      <nuxt-link :to="'/login?exam=' + $route.query.exam">
+      <h1>LOG IN</h1>
+      <nuxt-link :to="'/signup?exam=' + $route.query.exam">
         <button>
-          Log in instead <i class="bx bx-right-arrow-alt" />
+          Sign up instead <i class="bx bx-right-arrow-alt" />
         </button>
       </nuxt-link>
-      <input v-model="form.name1" placeholder="First Name">
-      <input v-model="form.name2" placeholder="Last Name">
       <input v-model="form.email" placeholder="Email">
-      <input v-model="form.info.whatsapp" placeholder="WhatsApp Number">
-      <Dropdown
-        :opts="[
-          ['2021', '2021'],
-          ['2022', '2022'],
-          ['2023', '2023'],
-          ['2024', '2024']
-        ]"
-        :val.sync="form.info.gradYear"
-        label="High school graduation year"
-      />
-      <Dropdown
-        :opts="[[null, 'OTHER (I can\'t find my school in the list)'], ...schools.map(x => [x.id, x.name])]"
-        :val.sync="form.schoolRel"
-        label="School"
-      />
-      <input v-if="!form.schoolRel" v-model="form.info.schoolName" placeholder="Your school's name">
-      <Dropdown
-        :opts="[
-          [null, '—'],
-          [true, 'Yes'],
-          [false, 'No'],
-        ]"
-        :val.sync="form.info.satBefore"
-        label="Have you taken the SAT before?"
-      />
-      <Dropdown
-        :opts="[
-          [null, '—'],
-          [true, 'Yes'],
-          [false, 'No'],
-        ]"
-        :val.sync="form.info.knowMillie"
-        label="Do you know Millie?"
-      />
       <button right @click="submit">
         Submit <i class="bx bx-right-arrow-alt" />
       </button>
-      <!-- {{schools}} -->
     </div>
     <div v-else>
       <h2>Please check your inbox for your personal link!</h2>
@@ -64,20 +26,11 @@ export default {
     if (!this.$route.query.exam) throw new Error('Bad Request');
     return {
       form: {
-        email: '',
-        name1: '',
-        name2: '',
-        schoolRel: null,
-        info: {
-          gradYear: '2021',
-          satBefore: null,
-          knowMillie: null,
-          whatsapp: '',
-          schoolName: ''
-        }
+        email: ''
       },
       isSubmit: false,
-      schools: []
+      schools: [],
+      exam: this.$route.query.exam
     }
   },
   async fetch() {
@@ -87,12 +40,7 @@ export default {
     async submit() {
       await this.$axios.$post(`exams/${this.$route.query.exam}/signup`, {
         email: this.form.email,
-        name: this.form.name1 + ' ' + this.form.name2,
-        schoolRel: this.form.schoolRel,
-        info: {
-          ...this.form.info,
-          schoolName: this.form.schoolRel ? null : this.form.info.schoolName
-        }
+        isLogin: true
       });
       this.isSubmit = true;
     }
