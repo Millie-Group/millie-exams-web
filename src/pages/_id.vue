@@ -88,10 +88,15 @@ export default {
   },
   methods: {
     async refresh(progress = false) {
-      if (this.$route.params.id)
-        this.student = await this.$axios.$get(`students/${this.$route.params.id}`, {
-          progress
-        });
+      try {
+        if (this.$route.params.id)
+          this.student = await this.$axios.$get(`students/${this.$route.params.id}`, {
+            progress
+          });
+      } catch (err) {
+        clearInterval(this.refreshInterval);
+        throw err;
+      }
     },
     statusMsg(exam) {
       return {
@@ -104,8 +109,7 @@ export default {
   },
   mounted() {
     this.refresh(true);
-    // change to a bigger interval!!!
-    this.refreshInterval = setInterval(this.refresh, 10000);
+    this.refreshInterval = setInterval(this.refresh, 30000);
   },
   destroyed() {
     clearInterval(this.refreshInterval);
