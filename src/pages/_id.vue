@@ -12,7 +12,7 @@
         </a>
       </Hint>
       <SignUpExisting />
-      <div v-for="exam in student.exams" :key="exam.exam.id">
+      <div v-for="exam in filteredExams" :key="exam.exam.id">
         <section class="exam">
           <h2 class="exam-name">
             {{exam.exam.name}}
@@ -105,6 +105,15 @@ export default {
         finished: 'The exam has finished',
         scored: 'The exam has been scored'
       }[exam.state] || 'The exam has been scored'
+    }
+  },
+  computed: {
+    filteredExams() {
+      const inProgress = this.student?.exams.filter(x => x.exam.exam.state === 'in-progress');
+      if (inProgress.length)
+        return inProgress;
+
+      return this.student?.exams;
     }
   },
   mounted() {

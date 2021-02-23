@@ -7,7 +7,7 @@
       <h1 class="school-name">
         {{school.name}}
       </h1>
-      <div v-for="exam in exams" :key="exam.id">
+      <div v-for="exam in sorted" :key="exam.id">
         <section class="exam">
           <h2 class="exam-name">
             {{exam.name}}
@@ -64,10 +64,18 @@
                 Leaderboard
               </h1>
             </h1>
-            <table>
+            <Hint style="margin-top: 20px;">
+              Only includes the schools with 2 or more attendees
+            </Hint>
+            <table class="leaderboards__table">
               <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
                 <td>
-                  {{s.name}}
+                  <div style="display: flex;">
+                    <div style="margin-right: 20px;">
+                      {{idx + 1}}.
+                    </div>
+                    <div>{{s.name}}</div>
+                  </div>
                 </td>
                 <td>
                   {{score.toFixed()}}
@@ -95,9 +103,14 @@ export default {
     // console.log(this.$route.params);
     const [school, exams] = await this.$axios.$get(`schools/${this.$route.params.id}`);
     this.school = school;
-    this.exams = exams.map(x => ({...x, students: _.sortBy(x.students, ['score.present', 'student.name']).reverse()}))
+    this.exams = exams.map(x => ({...x, students: _.orderBy(x.students, ['score.present', 'student.name'], ['desc', 'asc'])}))
       .filter(x => x.state === 'scored');
   },
+  computed: {
+    sorted() {
+      return _.orderBy(this.exams, ['date'], ['desc'])
+    }
+  }
   // methods: {
   //   sorted() {
 
