@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     filteredExams() {
-      const inProgress = this.student?.exams.filter(x => x.exam.exam.state === 'in-progress');
+      const inProgress = this.student?.exams.filter(x => x.exam.state === 'in-progress');
       if (inProgress.length)
         return inProgress;
 
