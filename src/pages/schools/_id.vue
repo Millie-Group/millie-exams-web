@@ -1,7 +1,7 @@
 <template>
   <div>
-    {{exams}}<br><br><br>
-    {{sorted}}
+    <!-- {{exams}}<br><br><br>
+    {{sorted}} -->
     <div v-if="school">
       <!-- {{school}}
       {{exams}} -->
@@ -62,29 +62,31 @@
               </div>
 
               <div class="leaderboards">
-                <h1>
+                <header style="display: flex">
                   <i class="bx bxs-trophy" style="color: gold" />
                   <h1>
                     Leaderboard
                   </h1>
-                </h1>
+                </header>
                 <Hint style="margin-top: 20px;">
                   Only includes the schools with 2 or more attendees
                 </Hint>
                 <table class="leaderboards__table">
-                  <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
-                    <td>
-                      <div style="display: flex;">
-                        <div style="margin-right: 20px;">
-                          {{idx + 1}}.
+                  <tbody>
+                    <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
+                      <td>
+                        <div style="display: flex;">
+                          <div style="margin-right: 20px;">
+                            {{idx + 1}}.
+                          </div>
+                          <div>{{s.name}}</div>
                         </div>
-                        <div>{{s.name}}</div>
-                      </div>
-                    </td>
-                    <td>
-                      {{score.toFixed()}}
-                    </td>
-                  </tr>
+                      </td>
+                      <td>
+                        {{score.toFixed()}}
+                      </td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </section>
@@ -105,7 +107,7 @@ export default {
       exams: []
     }
   },
-  async mounted() {
+  async fetch() {
     // console.log(this.$route.params);
     const [school, exams] = await this.$axios.$get(`schools/${this.$route.params.id}`);
     this.school = school;
