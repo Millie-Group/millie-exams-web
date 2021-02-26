@@ -38,7 +38,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="student in exam.students" :key="student.id" class="student-row">
+                    <tr v-for="student in exam.students.filter(x => x.score)" :key="student.id" class="student-row">
                       <td>
                         <nuxt-link :to="'/' + student.student.access">
                           {{student.student.name}}
@@ -117,7 +117,9 @@ export default {
   },
   computed: {
     sorted() {
+      console.log('computed, exams', this.exams);
       if (!this.exams.length) return [];
+      console.log('computed, sorted', _.orderBy(this.exams, ['date'], ['desc']);
       return _.orderBy(this.exams, ['date'], ['desc'])
     }
   }

@@ -202,20 +202,24 @@ export default {
 
       let studentIds = [];
       let page = 1;
-      while (true) {
-        const selection = this.emailSchool === 'all'
-          ? this.room.selectedStudents.map(x => x.id)
-          : (
-            this.emailSchool === 'selection'
-              ? this.selection
-              : this.room.selectedStudents.filter(x => x.schoolRel).filter(x => x.schoolRel.id === this.emailSchool)
-          );
-        const data = await sendEmailsToSchool(selection, page)
+      try {
+        while (true) {
+          const selection = this.emailSchool === 'all'
+            ? this.room.selectedStudents.map(x => x.id)
+            : (
+              this.emailSchool === 'selection'
+                ? this.selection
+                : this.room.selectedStudents.filter(x => x.schoolRel).filter(x => x.schoolRel.id === this.emailSchool)
+            );
+          const data = await sendEmailsToSchool(selection, page)
 
-        if (!data.length) break;
+          if (!data.length) break;
 
-        studentIds = [...studentIds, data];
-        page++;
+          studentIds = [...studentIds, data];
+          page++;
+        }
+      } catch (err) {
+        console.log(err);
       }
 
       if (this.emailType === 'scores')
