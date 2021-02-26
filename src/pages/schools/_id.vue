@@ -119,7 +119,7 @@ export default {
     sorted() {
       console.log('computed, exams', this.exams);
       if (!this.exams.length) return [];
-      console.log('computed, sorted', _.orderBy(this.exams, ['date'], ['desc']);
+      console.log('computed, sorted', _.orderBy(this.exams, ['date'], ['desc']));
       return _.orderBy(this.exams, ['date'], ['desc'])
     }
   }
