@@ -3,7 +3,7 @@
     <div v-if="selected == null">
       ERROR
     </div>
-    <div v-else-if="~students.findIndex(x => x.email === selected.email)" class="select-wrap">
+    <div v-else-if="~students.findIndex(x => x.email.toLowerCase() === selected.email.toLowerCase())" class="select-wrap">
       <i class="bx bxs-user" />
       <i class="bx bxs-circle" :style="{color: isOnline ? 'green' : 'red'}" />
       <i v-if="(score || {}).isChanged" class="bx bxs-pencil" />

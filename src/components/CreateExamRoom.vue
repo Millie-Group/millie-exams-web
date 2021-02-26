@@ -127,6 +127,10 @@ export default {
 
       let st = this.room.selectedStudents.filter(x => x);
 
+      // console.log(st);
+      // return;
+      await Promise.resolve();
+
       const id = this.room.id;
 
       const copy = [...this.room.scores];
@@ -141,9 +145,13 @@ export default {
         }
       });
 
+      // console.log(stReq);
+
       st = st.map((x) => {
-        return stReq.find(y => y.email === x.email);
+        return stReq.find(y => y.email.toLowerCase() === x.email.toLowerCase());
       });
+
+      // console.log(st);
 
       await this.$axios.$post(`exams/${id}/students`, st.map(x => x.id), {
         headers: {
