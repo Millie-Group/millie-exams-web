@@ -109,6 +109,7 @@ export default {
   },
   computed: {
     sorted() {
+      if (!this.exams.length) return [];
       return _.orderBy(this.exams, ['date'], ['desc'])
     }
   }
