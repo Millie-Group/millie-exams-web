@@ -1,89 +1,95 @@
 <template>
-  <div v-if="school && exams">
-    <!-- {{school}}
-    {{exams}} -->
-    <div class="page wide-padded-container">
-      <Logo />
-      <h1 class="school-name">
-        {{school.name}}
-      </h1>
-      <div v-for="exam in sorted" :key="exam.id">
-        <section class="exam">
-          <h2 class="exam-name">
-            {{exam.name}}
-          </h2>
+  <div>
+    {{exams}}<br><br><br>
+    {{sorted}}
+    <div v-if="school">
+      <!-- {{school}}
+      {{exams}} -->
+      <div class="page wide-padded-container">
+        <Logo />
+        <h1 class="school-name">
+          {{school.name}}
+        </h1>
+        <div v-if="exams.length">
+          <div v-for="exam in sorted" :key="exam.id">
+            <section class="exam">
+              <h2 class="exam-name">
+                {{exam.name}}
+              </h2>
 
-          <div v-if="true" class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Present?</th>
-                  <th v-for="i in 4" :key="'th' + i">
-                    Section {{i}}
-                  </th>
-                  <th>
-                    English
-                  </th>
-                  <th>
-                    Math
-                  </th>
-                  <th>
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="student in exam.students" :key="student.id" class="student-row">
-                  <td>
-                    <nuxt-link :to="'/' + student.student.access">
-                      {{student.student.name}}
-                    </nuxt-link>
-                  </td>
-                  <td>
-                    <i :class="['bx', student.score && student.score.present ? 'bx-check' : 'bx-x']" />
-                  </td>
-                  <td v-for="i in 4" :key="'td1' + i">
-                    {{student.score.correctCounts[i-1]}}
-                  </td>
-                  <td v-for="i in 2" :key="'td2' + i">
-                    {{student.score.totals[i-1]}}
-                  </td>
-                  <td>
-                    {{student.score.totals[0] + student.score.totals[1]}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              <div v-if="true" class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Present?</th>
+                      <th v-for="i in 4" :key="'th' + i">
+                        Section {{i}}
+                      </th>
+                      <th>
+                        English
+                      </th>
+                      <th>
+                        Math
+                      </th>
+                      <th>
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="student in exam.students" :key="student.id" class="student-row">
+                      <td>
+                        <nuxt-link :to="'/' + student.student.access">
+                          {{student.student.name}}
+                        </nuxt-link>
+                      </td>
+                      <td>
+                        <i :class="['bx', student.score && student.score.present ? 'bx-check' : 'bx-x']" />
+                      </td>
+                      <td v-for="i in 4" :key="'td1' + i">
+                        {{student.score.correctCounts[i-1]}}
+                      </td>
+                      <td v-for="i in 2" :key="'td2' + i">
+                        {{student.score.totals[i-1]}}
+                      </td>
+                      <td>
+                        {{student.score.totals[0] + student.score.totals[1]}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-          <div class="leaderboards">
-            <h1>
-              <i class="bx bxs-trophy" style="color: gold" />
-              <h1>
-                Leaderboard
-              </h1>
-            </h1>
-            <Hint style="margin-top: 20px;">
-              Only includes the schools with 2 or more attendees
-            </Hint>
-            <table class="leaderboards__table">
-              <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
-                <td>
-                  <div style="display: flex;">
-                    <div style="margin-right: 20px;">
-                      {{idx + 1}}.
-                    </div>
-                    <div>{{s.name}}</div>
-                  </div>
-                </td>
-                <td>
-                  {{score.toFixed()}}
-                </td>
-              </tr>
-            </table>
+              <div class="leaderboards">
+                <h1>
+                  <i class="bx bxs-trophy" style="color: gold" />
+                  <h1>
+                    Leaderboard
+                  </h1>
+                </h1>
+                <Hint style="margin-top: 20px;">
+                  Only includes the schools with 2 or more attendees
+                </Hint>
+                <table class="leaderboards__table">
+                  <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
+                    <td>
+                      <div style="display: flex;">
+                        <div style="margin-right: 20px;">
+                          {{idx + 1}}.
+                        </div>
+                        <div>{{s.name}}</div>
+                      </div>
+                    </td>
+                    <td>
+                      {{score.toFixed()}}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
       </div>
     </div>
   </div>
