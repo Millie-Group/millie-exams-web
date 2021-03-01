@@ -17,7 +17,7 @@
           <TextInput
             :val.sync="form.name1"
             label="First Name*"
-            placeholder="e.g. John"
+            placeholder="e.g. Milile"
             :validators="[
               [null, x => x.length > 0]
             ]"
@@ -26,7 +26,7 @@
           <TextInput
             :val.sync="form.name2"
             label="Last Name*"
-            placeholder="e.g. Smith"
+            placeholder="e.g. Billie"
             :validators="[
               [null, x => x.length > 0]
             ]"
@@ -196,7 +196,7 @@ export default {
   computed: {
     examDate() {
       if (!this.exam) return ''
-      return format(new Date(this.exam.date), "EEEE, d MMMM h:mm a 'UTC'")
+      return format(new Date(this.exam.date), 'EEEE, d MMMM h:mm a O')
     },
     test() {
       return {
