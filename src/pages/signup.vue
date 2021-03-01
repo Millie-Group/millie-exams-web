@@ -110,13 +110,20 @@
             label="Do you know Millie?*"
             style="margin-bottom: 0"
           />
+          <label style="display: flex">
+            <input v-model="accepttos" type="checkbox" style="margin-right: 20px;">
+            <div>
+              <span style="display: block; font-weight: 500;">I agree to Millie Privacy Policy*</span>
+              By filling out this form, you also sign up to Millie distribution list for full access to our weekly webinars and panels. You will be able to unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.
+            </div>
+          </label>
           <div
             class="flex-right"
             style="margin-bottom: 80px"
           >
             <button
               right
-              :disabled="Object.values(errors).filter(x => !x).length > 0 || !Object.keys(country).length"
+              :disabled="Object.values(errors).filter(x => !x).length > 0 || !Object.keys(country).length || !accepttos"
               @click="submit"
             >
               Submit <i class="bx bx-right-arrow-alt" />
@@ -157,7 +164,8 @@ export default {
       isSubmit: false,
       schools: [],
       errors: {},
-      exam: null
+      exam: null,
+      accepttos: false
     }
   },
   async fetch() {
@@ -188,7 +196,7 @@ export default {
   computed: {
     examDate() {
       if (!this.exam) return ''
-      return format(new Date(this.exam.date), "EEEE, d MMMM h:mm 'UTC'")
+      return format(new Date(this.exam.date), "EEEE, d MMMM h:mm a 'UTC'")
     },
     test() {
       return {
