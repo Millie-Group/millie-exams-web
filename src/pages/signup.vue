@@ -17,7 +17,7 @@
           <TextInput
             :val.sync="form.name1"
             label="First Name*"
-            placeholder="e.g. Milile"
+            placeholder="e.g. Millie"
             :validators="[
               [null, x => x.length > 0]
             ]"
