@@ -1,28 +1,51 @@
 <template>
-  <input v-bind="$attrs" :value="val" @input="x => $emit('update:val', x.target.value)">
+  <div>
+    <h1 v-if="label">
+      {{label}}
+    </h1>
+    <input v-bind="$attrs" :value="val" @input="x => $emit('update:val', x.target.value)">
+    <div class="validation-hints">
+      <FormValidationHint v-for="([name, correct, vanish], idx) in validationHints.filter(([n]) => n != null && n.length)" :key="idx" :correct="correct" :hide="vanish">
+        {{name}}
+      </FormValidationHint>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    val: null
+    val: null,
+    validators: {
+      type: Array,
+      default: () => ([])
+    },
+    validatordeps: {
+      type: Array,
+      default: () => ([])
+    },
+    label: null
   },
   data() {
     return {
-      val_: this.val ?? ''
+      validationHints: []
+    }
+  },
+  computed: {
+    valueAndDeps() {
+      return [this.val, ...this.validatordeps]
     }
   },
   watch: {
-    val_: {
+    valueAndDeps: {
       immediate: true,
+      deep: true,
       handler(n) {
-        this.$emit('update:val', n);
-      }
-    },
-    val: {
-      immediate: true,
-      handler(n) {
-        this.val_ = n;
+        const hints = this.validators.map(([text, v, vanish]) => {
+          return [text, v(this.val), vanish?.(this.val)];
+        });
+        this.validationHints = hints;
+        this.$emit('validated', hints.filter(([_, val]) => !val).length === 0);
       }
     }
   }
@@ -31,7 +54,21 @@ export default {
 
 <style lang="scss" scoped>
 input {
-  border: 2px solid #fb6c30;
+  width: 100%;
+  padding: .4em .9em;
+  font-size: 1.3rem;
+  border: 2px solid $primary;
   border-radius: 3px;
+  box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
+  // margin-bottom: 25px;
+}
+h1 {
+  margin-left: 20px;
+  font-weight: 500;
+  font-size: .9;
+  margin-bottom: 6px;
+}
+.validation-hints {
+  margin-top: 7px;
 }
 </style>

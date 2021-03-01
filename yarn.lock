@@ -6594,6 +6594,11 @@ globule@^1.0.0:
     lodash "~4.17.10"
     minimatch "~3.0.2"
 
+google-libphonenumber@^3.2.17:
+  version "3.2.17"
+  resolved "https://registry.yarnpkg.com/google-libphonenumber/-/google-libphonenumber-3.2.17.tgz#6146ca39da98f9ddd20851b1ced2fb7b5b3f543d"
+  integrity sha512-T1fBQ3ujlpo4VUe0palZVHxBkY1zsfCShkS3l1rNq/d5C6C1SIijo8aXzgpJeGQFB8Bk+C36o6jhLl05NtfQ3w==
+
 got@^11.7.0:
   version "11.8.0"
   resolved "https://registry.yarnpkg.com/got/-/got-11.8.0.tgz#be0920c3586b07fd94add3b5b27cb28f49e6545f"
@@ -12942,6 +12947,11 @@ uuid@^8.3.0, uuid@^8.3.1:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
   integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
+
+v-click-outside@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/v-click-outside/-/v-click-outside-3.1.2.tgz#1dbaa14bf09a21bd16f23a38f03bfa3988f71281"
+  integrity sha512-gMdRqfRE6m6XU6SiFi3dyBlFB2MWogiXpof8Aa3LQysrl9pzTndqp/iEaAphLoadaQUFnQ0ec6fLLaxr7LiY6A==
 
 v8-compile-cache@^2.0.3:
   version "2.1.1"
