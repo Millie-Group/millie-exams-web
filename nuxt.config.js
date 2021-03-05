@@ -57,6 +57,7 @@ module.exports = {
   plugins: [
     {src: '@/plugins/vuexpersist.js', ssr: false},
     {src: '@/plugins/vclickoutside.js', ssr: false},
+    {src: '@/plugins/portal.js', ssr: true},
   ],
   /*
   ** Auto import components
@@ -68,6 +69,7 @@ module.exports = {
   */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
+    '@nuxtjs/tailwindcss',
     '@nuxtjs/eslint-module',
   ],
   /*

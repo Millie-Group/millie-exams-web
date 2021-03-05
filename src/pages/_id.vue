@@ -12,11 +12,18 @@
         </a>
       </Hint>
       <SignUpExisting />
-      <div v-for="exam in filteredExams" :key="exam.exam.id">
-        <section class="exam">
-          <h2 class="exam-name">
-            {{exam.exam.name}}
-          </h2>
+      <div v-for="exam in filteredExams" :key="exam.exam.id" class="relative">
+        <section class="exam" :class="[exam.cancelled && 'cancelled']">
+          <div class="exam-name flex justify-between items-center">
+            <div>
+              {{exam.exam.name}}
+            </div>
+            <button v-if="!exam.cancelled && exam.exam.state === 'about-to-start'" class="bg-white text-black px-3 py-1 rounded" @click="cancel(exam.exam.id)">
+              <IconLabel icon="bxs-calendar-x">
+                Cancel attendance
+              </IconLabel>
+            </button>
+          </div>
           <h3>
             <b style="font-weight: 500">
               Status:
@@ -73,6 +80,14 @@
           </div>
           <ExamPlace v-if="!exam.exam.state || exam.exam.state === 'scored'" :place="exam.place" />
         </section>
+        <div v-if="exam.cancelled" class="cancel-text bg-white bg-opacity-1 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 py-4 shadow-lg border-black border-2 rounded">
+          <h1 class="w-500 text-2xl text-center">
+            CANCELLED
+          </h1>
+          <h2 class="mt-4">
+            You have cancelled your attendance in this exam
+          </h2>
+        </div>
       </div>
     </div>
   </div>
@@ -105,6 +120,14 @@ export default {
         finished: 'The exam has finished',
         scored: 'The exam has been scored'
       }[exam.state] || 'The exam has been scored'
+    },
+    async cancel(exam) {
+      if (!confirm('Are you sure you want to cancel your attendance in this exam?')) return;
+      await this.$axios.$post('exam-cancellation', {
+        student: this.student.id,
+        exam
+      });
+      this.refresh();
     }
   },
   computed: {
@@ -139,6 +162,11 @@ export default {
     margin-top: 50px;
     overflow-x: auto;
     width: 100%;
+
+    &.cancelled {
+      opacity: .3;
+      pointer-events: none;
+    }
   }
   .page {
     margin-top: 10px;

@@ -15,10 +15,18 @@
 
       <FileInput @load="loadCSV" />
 
-      <button v-if="!isScoresIncorrect && isUpdated" class="submit-btn" @click="submit">
+      <PLainButton v-if="!isScoresIncorrect && isUpdated" @click="submit">
         Update
-      </button>
+      </PLainButton>
 
+    </div>
+
+    <div style="margin-top: 20px;">
+      <PlainButton>
+        <IconLabel icon="bxs-download" @click.native="download">
+          Export CSV
+        </IconLabel>
+      </PlainButton>
     </div>
 
     <!-- {{selectedStudents}} -->
@@ -39,7 +47,8 @@
     <!-- {{room.scores[0].isIncorrect}}
      -->
 
-    <div v-if="room.selectedStudents.length" class="table-wrap">
+    <div v-if="room.students.length" class="table-wrap">
+      <!-- {{room.students}} -->
       <table>
         <thead>
           <tr>
@@ -62,30 +71,30 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(_, idx) in room.selectedStudents.length" :key="'tr' + idx" class="student-row" :class="[(room.scores[idx] || {}).isIncorrect && 'incorrect']">
+          <tr v-for="({score = {}, student, cancelled}, idx) in room.students" :key="'tr' + idx" class="student-row" :class="[(score || {}).isIncorrect && 'incorrect', cancelled && 'cancelled']">
             <td v-if="emailSchool === 'selection'" class="selection-check">
-              <input v-model="selection" type="checkbox" :value="room.selectedStudents[idx].id">
+              <input v-model="selection" type="checkbox" :value="student.id">
             </td>
             <td>
               <ExamStudentInfo
                 :students="students"
-                :score="room.scores[idx]"
-                :selected="room.selectedStudents[idx]"
+                :score="score"
+                :selected="student"
               />
             </td>
-            <template v-if="room.scores[idx]">
-              <td><a v-if="room.selectedStudents[idx].schoolRel" :href="'/schools/' + room.selectedStudents[idx].schoolRel.access" target="_blank">{{room.selectedStudents[idx].school}}</a><span v-else>{{room.selectedStudents[idx].school || '*' + (room.selectedStudents[idx].info || {}).schoolName + '*'}}</span></td>
+            <td><a v-if="student.schoolRel" :href="'/schools/' + student.schoolRel.access" target="_blank">{{student.school}}</a><span v-else>{{'*' + (student.info || {}).schoolName + '*'}}</span></td>
+            <template v-if="score">
               <td>
-                <i :class="['bx', room.scores[idx].present ? 'bx-check' : 'bx-x']" />
+                <i :class="['bx', score.present ? 'bx-check' : 'bx-x']" />
               </td>
               <td v-for="(_i, i) in 4" :key="'td1' + i">
-                {{room.scores[idx].correctCounts[i]}}
+                {{score.correctCounts[i]}}
               </td>
               <td v-for="(_i, i) in 2" :key="'td2' + i">
-                {{room.scores[idx].totals[i]}}
+                {{score.totals[i]}}
               </td>
               <td>
-                {{room.scores[idx].totals[0] + room.scores[idx].totals[1]}}
+                {{score.totals[0] + score.totals[1]}}
               </td>
             </template>
           </tr>
@@ -97,6 +106,8 @@
 
 <script>
 import * as _ from 'lodash';
+import * as json2csv from 'json2csv';
+import {format} from 'date-fns';
 export default {
   data() {
     return {
@@ -116,7 +127,8 @@ export default {
   },
   props: {
     room: null,
-    students: null
+    students: null,
+    roomidx: null
   },
   methods: {
     getUnique(arr, field) {
@@ -317,6 +329,37 @@ export default {
         this.room.selectedStudents = [...students];
         this.room.studentsLength = students.length + 1;
       });
+    },
+    download() {
+      const rows = this.room.students.map((x) => {
+        return {
+          'CANCELLED?': x.cancelled,
+          'Student Name': x.student.name,
+          'First Name': x.student.info?.name1,
+          'Last Name': x.student.info?.name2,
+          'School ID': x.student.school?.name,
+          'School Custom': x.student.info?.schoolName,
+          'WhatsApp Number': x.student.info?.whatsapp,
+          Country: x.student.info?.country,
+          'Grad Year': x.student.info?.gradYear,
+          'Know Millie?': x.student.info?.knowMillie,
+          'SAT Before?': x.student.info?.satBefore,
+          'Online Timestamp': format(new Date(x.student.onlineAt), 'MM/dd/y hh:mm:ss O'),
+          'Section 1': x.score?.correctCounts?.[0],
+          'Section 2': x.score?.correctCounts?.[1],
+          'Section 3': x.score?.correctCounts?.[2],
+          'Section 4': x.score?.correctCounts?.[3],
+          English: x.score?.totals?.[0],
+          Math: x.score?.totals?.[1],
+        }
+      })
+
+      const csv = json2csv.parse(rows, {fields: Object.keys(rows[0])});
+
+      const a = document.createElement('a');
+      a.href = 'data:application/octet-stream,' + encodeURIComponent(csv);
+      a.download = this.room.name + ` - R${this.roomidx + 1}.csv`;
+      a.click();
     }
   },
   watch: {
@@ -358,7 +401,6 @@ table {
   }
   td, th {
     &:nth-child(1) {
-      width: 99%;
       padding-left: .7em;
     }
     &:nth-last-child(1) {
@@ -467,5 +509,11 @@ h1 {
   width: 10px!important;
   max-width: 10px;
   min-width: 10px;
+}
+
+.student-row {
+  &.cancelled {
+    opacity: .4
+  }
 }
 </style>

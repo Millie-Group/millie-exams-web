@@ -1,6 +1,7 @@
 <template>
   <div>
     <Nuxt />
+    <PortalTarget name="popup" multiple />
   </div>
 </template>
 

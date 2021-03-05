@@ -20,8 +20,14 @@
     <!-- {{rooms}} -->
     <details v-for="(room, idx) in rooms" :key="room.id">
       <summary>Room {{idx + 1}}</summary>
-      <CreateExamRoom :students="students" :room.sync="rooms[idx]" />
+      <CreateExamRoom :students="students" :room.sync="rooms[idx]" :roomidx="idx" />
     </details>
+
+    <PlainButton v-if="edit" style="margin-top: 50px" @click.native="addRoom">
+      <IconLabel icon="bx-plus">
+        Create Room
+      </IconLabel>
+    </PlainButton>
   </div>
 </template>
 
@@ -75,6 +81,7 @@ export default {
               selectedStudents,
               studentsLength: selectedStudents.length + 1,
               scores: x.students.map(x => x.score),
+              students: x.students.map(x => ({...x, student: {...x.student, school: x.student.school?.name, schoolRel: x.student.school}})),
               meta: x.meta || {}
             }
           })
@@ -235,6 +242,14 @@ export default {
         this.selectedStudents = [...students];
         this.studentsLength = students.length + 1;
       });
+    },
+    async addRoom() {
+      await this.$axios.$post(`exams/${this.edit}/addroom`, {}, {
+        headers: {
+          Authorization: 'Bearer ' + this.$store.state.auth.pw
+        }
+      });
+      window.location.reload();
     }
   },
   watch: {

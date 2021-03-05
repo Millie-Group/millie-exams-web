@@ -35,7 +35,7 @@
           <TextInput
             :val.sync="form.email"
             label="Email*"
-            placeholder="e.g. john.smith@gmail.com"
+            placeholder="e.g. millie.billie@gmail.com"
             :validators="[
               [form.email.length && 'The email should be valid', x => /^.+@.+\.[a-zA-Z]{2,}$/.test(x)]
             ]"
@@ -110,6 +110,33 @@
             label="Do you know Millie?*"
             style="margin-bottom: 0"
           />
+          <TextInput
+            :val.sync="form.info.parent.name1"
+            label="Parent's First Name*"
+            placeholder="e.g. Lillie"
+            :validators="[
+              [null, x => x.length > 0]
+            ]"
+            @validated="parent_name1 => setError({parent_name1})"
+          />
+          <TextInput
+            :val.sync="form.info.parent.name2"
+            label="Parent's Last Name*"
+            placeholder="e.g. Billie"
+            :validators="[
+              [null, x => x.length > 0]
+            ]"
+            @validated="parent_name2 => setError({parent_name2})"
+          />
+          <TextInput
+            :val.sync="form.info.parent.email"
+            label="Parent's Email*"
+            placeholder="e.g. lillie.billie@gmail.com"
+            :validators="[
+              [form.email.length && 'The email should be valid', x => /^.+@.+\.[a-zA-Z]{2,}$/.test(x)]
+            ]"
+            @validated="parent_email => setError({parent_email})"
+          />
           <label style="display: flex">
             <input v-model="accepttos" type="checkbox" style="margin-right: 20px;">
             <div>
@@ -157,7 +184,12 @@ export default {
           satBefore: true,
           knowMillie: true,
           whatsapp: '',
-          schoolName: ''
+          schoolName: '',
+          parent: {
+            name1: '',
+            name2: '',
+            email: ''
+          }
         }
       },
       country: {},
@@ -183,7 +215,11 @@ export default {
           schoolName: this.form.schoolRel ? null : this.form.info.schoolName,
           country: this.country.name,
           name1: this.form.name1,
-          name2: this.form.name2
+          name2: this.form.name2,
+          parent: {
+            ...this.form.info.parent,
+            name: this.form.info.parent.name1 + ' ' + this.form.info.parent.name2
+          }
         }
       });
       this.isSubmit = true;

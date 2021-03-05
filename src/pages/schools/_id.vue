@@ -12,9 +12,18 @@
         </h1>
         <div v-if="exams.length">
           <div v-for="exam in sorted" :key="exam.id">
+            <SchoolLeaderboardsPopup :open.sync="isLBOpen" :exam="exam" />
+
             <section class="exam">
-              <h2 class="exam-name">
-                {{exam.name}}
+              <h2 class="exam-name flex justify-between items-center">
+                <div>
+                  {{exam.name}}
+                </div>
+                <button class="bg-white text-black px-3 py-1 rounded" @click="isLBOpen = true">
+                  <IconLabel icon="bxs-trophy">
+                    See the leaderboard
+                  </IconLabel>
+                </button>
               </h2>
 
               <div v-if="true" class="table-wrap">
@@ -60,35 +69,6 @@
                   </tbody>
                 </table>
               </div>
-
-              <div class="leaderboards">
-                <header style="display: flex">
-                  <i class="bx bxs-trophy" style="color: gold" />
-                  <h1>
-                    Leaderboard
-                  </h1>
-                </header>
-                <Hint style="margin-top: 20px;">
-                  Only includes the schools with 2 or more attendees
-                </Hint>
-                <table class="leaderboards__table">
-                  <tbody>
-                    <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
-                      <td>
-                        <div style="display: flex;">
-                          <div style="margin-right: 20px;">
-                            {{idx + 1}}.
-                          </div>
-                          <div>{{s.name}}</div>
-                        </div>
-                      </td>
-                      <td>
-                        {{score.toFixed()}}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </section>
           </div>
         </div>
@@ -104,7 +84,8 @@ export default {
   data() {
     return {
       school: null,
-      exams: []
+      exams: [],
+      isLBOpen: false
     }
   },
   async mounted() {
@@ -299,28 +280,5 @@ table {
     }
   }
   max-width: 100%;
-}
-
-.leaderboards {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 70px;
-  h1 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 500;
-    font-size: 1.6rem;
-    margin-left: 15px;
-  }
-  i {
-    font-size: 3rem;
-    -webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color: black;
-  }
-  table {
-    max-width: 600px;
-  }
 }
 </style>
