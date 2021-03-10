@@ -13,17 +13,23 @@
 
     <div class="file-submit-wrap">
 
-      <FileInput @load="loadCSV" />
+      <FileInput @load="loadCSV">
+        <PlainButton>
+          <IconLabel icon="bxs-file-import" @click.native="download">
+            Import CSV
+          </IconLabel>
+        </PlainButton>
+      </FileInput>
 
-      <PLainButton v-if="!isScoresIncorrect && isUpdated" @click="submit">
-        Update
-      </PLainButton>
+      <PlainButton v-if="!isScoresIncorrect && isUpdated" @click.native="submit">
+        Merge
+      </PlainButton>
 
     </div>
 
     <div style="margin-top: 20px;">
       <PlainButton>
-        <IconLabel icon="bxs-download" @click.native="download">
+        <IconLabel icon="bxs-file-export" @click.native="download">
           Export CSV
         </IconLabel>
       </PlainButton>
@@ -32,9 +38,9 @@
     <!-- {{selectedStudents}} -->
     <!-- {{getUnique(selectedStudents, 'schoolRel.id')}} -->
 
-    <div v-if="!isUpdated && room.selectedStudents.length" class="file-submit-wrap" style="margin-top: 30px; display: flex; align-items: center">
+    <div v-if="!isUpdated && room.students.length" class="file-submit-wrap" style="margin-top: 30px; display: flex; align-items: center">
       <Dropdown :opts="[['scores', 'Scores'], ['zoom', 'Zoom links']]" :val.sync="emailType" style="font-size: .8rem" />
-      <SchoolEmailSelect :options="getUnique(room.selectedStudents.map(x => x.schoolRel).filter(x => x), 'id')" :selected.sync="emailSchool" style="font-size: .8rem" />
+      <SchoolEmailSelect :options="getUnique(room.students.map(x => x.student.schoolRel).filter(x => x), 'id')" :selected.sync="emailSchool" style="font-size: .8rem" />
       <label v-if="emailType === 'scores'">
         <input v-model="forceSend" type="checkbox" style="margin-right: 5px">
         Force Send to All
@@ -54,7 +60,8 @@
           <tr>
             <th v-if="emailSchool === 'selection'" class="selection-check" />
             <th>Name</th>
-            <th>School</th>
+            <th>School ID</th>
+            <th>School Custom</th>
             <th>Present?</th>
             <th v-for="i in 4" :key="'th' + i">
               Section {{i}}
@@ -71,7 +78,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="({score = {}, student, cancelled}, idx) in room.students" :key="'tr' + idx" class="student-row" :class="[(score || {}).isIncorrect && 'incorrect', cancelled && 'cancelled']">
+          <tr v-for="({score = {}, student, cancelled, isIncorrect}, idx) in room.students" :key="'tr' + idx" class="student-row" :class="[isIncorrect && 'incorrect', cancelled && 'cancelled']">
             <td v-if="emailSchool === 'selection'" class="selection-check">
               <input v-model="selection" type="checkbox" :value="student.id">
             </td>
@@ -82,7 +89,14 @@
                 :selected="student"
               />
             </td>
-            <td><a v-if="student.schoolRel" :href="'/schools/' + student.schoolRel.access" target="_blank">{{student.school}}</a><span v-else>{{'*' + (student.info || {}).schoolName + '*'}}</span></td>
+            <td>
+              <a v-if="student.school" :href="'/schools/' + student.school.access" target="_blank">
+                {{student.school.name}}
+              </a>
+            </td>
+            <td>
+              {{(student.info || {}).schoolName}}
+            </td>
             <template v-if="score">
               <td>
                 <i :class="['bx', score.present ? 'bx-check' : 'bx-x']" />
@@ -136,8 +150,7 @@ export default {
     },
     async submit() {
       if (this.isScoresIncorrect) return;
-
-      let st = this.room.selectedStudents.filter(x => x);
+      let st = this.room.students.filter(x => x).map(x => ({student: x.student, overwrite: x.overwrite}));
 
       // console.log(st);
       // return;
@@ -145,11 +158,13 @@ export default {
 
       const id = this.room.id;
 
-      const copy = [...this.room.scores];
-      for (const studentsScores of copy) {
-        studentsScores.correctCounts = studentsScores.correctCounts.map(x => +x);
-        studentsScores.totals = studentsScores.totals.map(x => +x);
-      }
+      const copy = [...this.room.students.map((x) => {
+        return {
+          correctCounts: x.score.correctCounts.map(x => +x),
+          totals: x.score.totals.map(x => +x),
+          present: x.score.present
+        }
+      })];
 
       const stReq = await this.$axios.$post('students', st, {
         headers: {
@@ -157,9 +172,9 @@ export default {
         }
       });
 
-      // console.log(stReq);
+      console.log(stReq);
 
-      st = st.map((x) => {
+      st = st.map(x => x.student).map((x) => {
         return stReq.find(y => y.email.toLowerCase() === x.email.toLowerCase());
       });
 
@@ -246,88 +261,116 @@ export default {
     loadCSV(text) {
       this.isUpdated = true;
       const csv = window.CSV.parse(text);
-      const headers = csv[0].map(x => x.trim().toLowerCase());
+      const headers = csv[0].map(x => (x || '').trim().toLowerCase());
 
       const columnIdx = {
-        present: headers.findIndex(x => x.startsWith('present')),
-        email: headers.findIndex(x => x.startsWith('email')),
-        name: headers.findIndex(x => x.startsWith('student name')),
-        school: headers.findIndex(x => x.startsWith('school id')),
-        correctCounts: [
-          headers.findIndex(x => x.startsWith('section 1')),
-          headers.findIndex(x => x.startsWith('section 2')),
-          headers.findIndex(x => x.startsWith('section 3')),
-          headers.findIndex(x => x.startsWith('section 4'))
-        ],
-        totals: [
-          headers.findIndex(x => x.startsWith('english')),
-          headers.findIndex(x => x.startsWith('math'))
-        ]
+        student: {
+          email: headers.findIndex(x => x.startsWith('email')),
+          name: headers.findIndex(x => x.startsWith('student name')),
+        },
+        studentSchoolId: headers.findIndex(x => x.startsWith('school id')),
+        studentInfo: {
+          schoolName: headers.findIndex(x => x.startsWith('school custom')),
+          satBefore: headers.findIndex(x => x.startsWith('sat before')),
+          knowMillie: headers.findIndex(x => x.startsWith('know millie')),
+          whatsapp: headers.findIndex(x => x.startsWith('whatsapp number')),
+          gradYear: headers.findIndex(x => x.startsWith('grad year')),
+          country: headers.findIndex(x => x.startsWith('country')),
+          name1: headers.findIndex(x => x.startsWith('student first name')),
+          name2: headers.findIndex(x => x.startsWith('student first name')),
+        },
+        studentInfoParent: {
+          fullName: headers.findIndex(x => x.startsWith('parent name')),
+          name1: headers.findIndex(x => x.startsWith('parent first name')),
+          name2: headers.findIndex(x => x.startsWith('parent last name')),
+          email: headers.findIndex(x => x.startsWith('parent email'))
+        },
+        score: {
+          present: headers.findIndex(x => x.startsWith('present')),
+          correctCounts: [
+            headers.findIndex(x => x.startsWith('section 1')),
+            headers.findIndex(x => x.startsWith('section 2')),
+            headers.findIndex(x => x.startsWith('section 3')),
+            headers.findIndex(x => x.startsWith('section 4'))
+          ],
+          totals: [
+            headers.findIndex(x => x.startsWith('english')),
+            headers.findIndex(x => x.startsWith('math'))
+          ]
+        },
+        overwrite: headers.findIndex(x => x.startsWith('overwrite'))
       }
       const body = csv.slice(1);
-      const students = body.map((row) => {
-        const obj = {};
-        for (const [name, idx] of Object.entries(columnIdx)) {
-          if (Array.isArray(idx) || ['school', 'present'].includes(name)) continue;
-          obj[name] = row[idx]
-        }
-        if (row[columnIdx.school]) {
-          obj.school = '' + row[columnIdx.school];
-        }
-        return obj;
-      });
       this.isScoresIncorrect = false;
-      const scores = body.map((row) => {
-        const obj = {};
 
-        obj.correctCounts = columnIdx.correctCounts.map(x => row[x] || 0);
-        obj.totals = columnIdx.totals.map(x => row[x] || 0)
+      const students = body.map((row) => {
+        const obj = {score: {}, student: {info: {}}};
+        obj.overwrite = row[columnIdx.overwrite];
 
-        // console.log()
+        obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
+        obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
 
-        if (['yes', 'true', 'y'].includes((row[columnIdx.present] || '').toLowerCase().trim()))
-          obj.present = true;
-        else if (['no', 'false', 'n', ''].includes((row[columnIdx.present] || '').toLowerCase().trim()))
-          obj.present = false;
-        else throw new Error('Incorrect CSV data for the "Present?" column');
+        obj.score.present = row[columnIdx.score.present].trim().toLowerCase() === 'true';
 
-        if (obj.present) {
+        if (obj.score.present) {
           for (const [k, v] of [52, 44, 20, 38].entries()) {
             // console.log(k, v, obj.correctCounts[k]);
-            if (obj.correctCounts[k] > v || obj.correctCounts[k] < 0) {
+            if (obj.score.correctCounts[k] > v || obj.score.correctCounts[k] < 0) {
               obj.isIncorrect = true;
               this.isScoresIncorrect = true;
             }
           }
 
-          for (const total of obj.totals) {
+          for (const total of obj.score.totals) {
             if (total < 200 || total > 800) {
               obj.isIncorrect = true;
               this.isScoresIncorrect = true;
             }
           }
         } else {
-          for (const correctCount of obj.correctCounts)
+          for (const correctCount of obj.score.correctCounts)
             if (correctCount !== 0) {
               obj.isIncorrect = true;
               this.isScoresIncorrect = true;
             }
 
-          for (const total of obj.totals)
+          for (const total of obj.score.totals)
             if (total !== 0) {
               obj.isIncorrect = true;
               this.isScoresIncorrect = true;
             }
         }
+
+        for (const [name, idx] of Object.entries(columnIdx.student)) {
+          obj.student[name] = row[idx]
+        }
+        if (row[columnIdx.student.school]) {
+          obj.student.school = '' + row[columnIdx.student.school];
+        }
+        for (const [name, idx] of Object.entries(columnIdx.studentInfo)) {
+          const val = ['true', 'false'].includes((row[idx] || '').trim().toLowerCase())
+            ? (row[idx].trim().toLowerCase() === 'true')
+            : row[idx];
+          obj.student.info[name] = val
+        }
+        for (const [name, idx] of Object.entries(columnIdx.studentInfoParent)) {
+          const val = ['true', 'false'].includes((row[idx] || '').trim().toLowerCase())
+            ? (row[idx].trim().toLowerCase() === 'true')
+            : row[idx];
+
+          obj.student.info.parent ||= {};
+          obj.student.info.parent[name] = val
+        }
+        if (row[columnIdx.studentSchoolId]) {
+          obj.student.school = {name: row[columnIdx.studentSchoolId]}
+        }
+        console.log(obj);
         return obj;
       });
-      this.room.selectedStudents = [];
-      this.room.studentsLength = 0;
+      this.room.students = [];
 
       this.$nextTick(() => {
-        this.room.scores = scores;
-        this.room.selectedStudents = [...students];
-        this.room.studentsLength = students.length + 1;
+        this.room.students = students;
       });
     },
     download() {
@@ -335,8 +378,9 @@ export default {
         return {
           'CANCELLED?': x.cancelled,
           'Student Name': x.student.name,
-          'First Name': x.student.info?.name1,
-          'Last Name': x.student.info?.name2,
+          'Student First Name': x.student.info?.name1,
+          'Student Last Name': x.student.info?.name2,
+          Email: x.student.email,
           'School ID': x.student.school?.name,
           'School Custom': x.student.info?.schoolName,
           'WhatsApp Number': x.student.info?.whatsapp,
@@ -345,6 +389,11 @@ export default {
           'Know Millie?': x.student.info?.knowMillie,
           'SAT Before?': x.student.info?.satBefore,
           'Online Timestamp': format(new Date(x.student.onlineAt), 'MM/dd/y hh:mm:ss O'),
+          'Parent Name': x.student.info?.parent?.fullName,
+          'Parent First Name': x.student.info?.parent?.name1,
+          'Parent Last Name': x.student.info?.parent?.name2,
+          'Parent Email': x.student.info?.parent?.email,
+          'Present?': x.score?.present,
           'Section 1': x.score?.correctCounts?.[0],
           'Section 2': x.score?.correctCounts?.[1],
           'Section 3': x.score?.correctCounts?.[2],
@@ -362,20 +411,6 @@ export default {
       a.click();
     }
   },
-  watch: {
-    'room.studentsLength': {
-      immediate: true,
-      handler(n) {
-        const scores = [];
-        for (const i of Array(n).keys())
-          scores[i] = this.room.scores[i] || {
-            correctCounts: [],
-            totals: []
-          };
-        this.$emit('update:room', {...this.room, scores});
-      }
-    },
-  }
 }
 </script>
 

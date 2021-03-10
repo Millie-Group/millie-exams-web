@@ -1,5 +1,5 @@
 <template>
-  <div class="wide-padded-container">
+  <div class="super-wide-padded-container">
     <Logo />
     <BackButton />
     <DeleteExam :exam-id="+$route.query.edit" />
@@ -78,10 +78,7 @@ export default {
             const selectedStudents = x.students.map(x => x.student).map(x => ({...x, school: x.school?.name, schoolRel: x.school}));
             return {
               ...x,
-              selectedStudents,
-              studentsLength: selectedStudents.length + 1,
-              scores: x.students.map(x => x.score),
-              students: x.students.map(x => ({...x, student: {...x.student, school: x.student.school?.name, schoolRel: x.student.school}})),
+              students: x.students,
               meta: x.meta || {}
             }
           })
@@ -155,93 +152,6 @@ export default {
       }
 
       window.location.reload(true);
-    },
-    loadCSV(text) {
-      this.isUpdated = true;
-      const csv = window.CSV.parse(text);
-      const headers = csv[0].map(x => x.trim().toLowerCase());
-
-      const columnIdx = {
-        present: headers.findIndex(x => x.startsWith('present')),
-        email: headers.findIndex(x => x.startsWith('email')),
-        name: headers.findIndex(x => x.startsWith('student name')),
-        school: headers.findIndex(x => x.startsWith('school id')),
-        correctCounts: [
-          headers.findIndex(x => x.startsWith('section 1')),
-          headers.findIndex(x => x.startsWith('section 2')),
-          headers.findIndex(x => x.startsWith('section 3')),
-          headers.findIndex(x => x.startsWith('section 4'))
-        ],
-        totals: [
-          headers.findIndex(x => x.startsWith('english')),
-          headers.findIndex(x => x.startsWith('math'))
-        ]
-      }
-      const body = csv.slice(1);
-      const students = body.map((row) => {
-        const obj = {};
-        for (const [name, idx] of Object.entries(columnIdx)) {
-          if (Array.isArray(idx) || ['school', 'present'].includes(name)) continue;
-          obj[name] = row[idx]
-        }
-        if (row[columnIdx.school]) {
-          obj.school = '' + row[columnIdx.school];
-        }
-        return obj;
-      });
-      this.isScoresIncorrect = false;
-      const scores = body.map((row) => {
-        const obj = {};
-
-        obj.correctCounts = columnIdx.correctCounts.map(x => row[x] || 0);
-        obj.totals = columnIdx.totals.map(x => row[x] || 0)
-
-        // console.log()
-
-        if (['yes', 'true', 'y'].includes((row[columnIdx.present] || '').toLowerCase().trim()))
-          obj.present = true;
-        else if (['no', 'false', 'n', ''].includes((row[columnIdx.present] || '').toLowerCase().trim()))
-          obj.present = false;
-        else throw new Error('Incorrect CSV data for the "Present?" column');
-
-        if (obj.present) {
-          for (const [k, v] of [52, 44, 20, 38].entries()) {
-            // console.log(k, v, obj.correctCounts[k]);
-            if (obj.correctCounts[k] > v || obj.correctCounts[k] < 0) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
-            }
-          }
-
-          for (const total of obj.totals) {
-            if (total < 200 || total > 800) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
-            }
-          }
-        } else {
-          for (const correctCount of obj.correctCounts)
-            if (correctCount !== 0) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
-            }
-
-          for (const total of obj.totals)
-            if (total !== 0) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
-            }
-        }
-        return obj;
-      });
-      this.selectedStudents = [];
-      this.studentsLength = 0;
-
-      this.$nextTick(() => {
-        this.scores = scores;
-        this.selectedStudents = [...students];
-        this.studentsLength = students.length + 1;
-      });
     },
     async addRoom() {
       await this.$axios.$post(`exams/${this.edit}/addroom`, {}, {

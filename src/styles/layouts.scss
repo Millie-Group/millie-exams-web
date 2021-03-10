@@ -21,6 +21,12 @@ html {
   margin-bottom: 50px;
   @include padded-sides(15px, 30px);
 }
+.super-wide-padded-container {
+  @include margin-center;
+  max-width: 1300px;
+  margin-bottom: 50px;
+  @include padded-sides(15px, 30px);
+}
 
 // h1, h2, h3, h4, h5, h6 {
 //   font-family: $display-stack;

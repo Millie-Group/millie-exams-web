@@ -3,8 +3,8 @@
     <h1 v-if="label">
       {{label}}
     </h1>
-    <select :value="val" @change="$emit('update:val', $event.target.value)">
-      <option v-for="([v, text], idx) in opts" :key="idx" :value="v">
+    <select :value="opts.findIndex(([v]) => v === val)" @change="$emit('update:val', opts[$event.target.value][0])">
+      <option v-for="([, text], idx) in opts" :key="idx" :value="idx">
         {{text}}
       </option>
     </select>

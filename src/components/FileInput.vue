@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <i class="bx bx-upload" />
+    <slot><i class="bx bx-upload" /></slot>
     <input ref="fileinput" type="file" accept=".csv" @change="load">
   </div>
 </template>
@@ -24,13 +24,14 @@ export default {
 
 <style lang="scss" scoped>
 .wrap {
-  width: 30px;
-  height: 30px;
+  // width: 30px;
+  // height: 30px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
 
   @include flex-center(vh);
+  display: inline-flex;
 
   i {
     font-size: 2rem;
@@ -41,7 +42,10 @@ export default {
   input {
     position: absolute;
     width: 100%;
-    height: 30px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     opacity: 0;
     font-size: 0;
     cursor: pointer;
