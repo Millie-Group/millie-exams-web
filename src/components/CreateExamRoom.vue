@@ -310,7 +310,7 @@ export default {
         obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
         obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
 
-        obj.score.present = row[columnIdx.score.present].trim().toLowerCase() === 'true';
+        obj.score.present = (row[columnIdx.score.present] || '').trim().toLowerCase() === 'true';
 
         if (obj.score.present) {
           for (const [k, v] of [52, 44, 20, 38].entries()) {
@@ -348,13 +348,14 @@ export default {
           obj.student.school = '' + row[columnIdx.student.school];
         }
         for (const [name, idx] of Object.entries(columnIdx.studentInfo)) {
-          const val = ['true', 'false'].includes((row[idx] || '').trim().toLowerCase())
+          console.log(row[idx]);
+          const val = ['true', 'false'].includes(('' + row[idx]).trim().toLowerCase())
             ? (row[idx].trim().toLowerCase() === 'true')
             : row[idx];
           obj.student.info[name] = val
         }
         for (const [name, idx] of Object.entries(columnIdx.studentInfoParent)) {
-          const val = ['true', 'false'].includes((row[idx] || '').trim().toLowerCase())
+          const val = ['true', 'false'].includes(('' + row[idx]).trim().toLowerCase())
             ? (row[idx].trim().toLowerCase() === 'true')
             : row[idx];
 
