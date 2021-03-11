@@ -19,7 +19,7 @@
 
     <!-- {{rooms}} -->
     <details v-for="(room, idx) in rooms" :key="room.id">
-      <summary>Room {{idx + 1}}</summary>
+      <summary>Room {{idx + 1}} ({{room.students.length || 0}} students)</summary>
       <CreateExamRoom :students="students" :room.sync="rooms[idx]" :roomidx="idx" />
     </details>
 

@@ -286,7 +286,7 @@ export default {
           email: headers.findIndex(x => x.startsWith('parent email'))
         },
         score: {
-          present: headers.findIndex(x => x.startsWith('present')),
+          present: headers.findIndex(x => x.startsWith('submitted')),
           correctCounts: [
             headers.findIndex(x => x.startsWith('section 1')),
             headers.findIndex(x => x.startsWith('section 2')),
@@ -394,7 +394,7 @@ export default {
           'Parent First Name': x.student.info?.parent?.name1,
           'Parent Last Name': x.student.info?.parent?.name2,
           'Parent Email': x.student.info?.parent?.email,
-          'Present?': x.score?.present,
+          'Submitted?': x.score?.present,
           'Section 1': x.score?.correctCounts?.[0],
           'Section 2': x.score?.correctCounts?.[1],
           'Section 3': x.score?.correctCounts?.[2],
