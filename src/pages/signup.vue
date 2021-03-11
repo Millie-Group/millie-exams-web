@@ -218,7 +218,7 @@ export default {
           name2: this.form.name2,
           parent: {
             ...this.form.info.parent,
-            name: this.form.info.parent.name1 + ' ' + this.form.info.parent.name2
+            fullName: this.form.info.parent.name1 + ' ' + this.form.info.parent.name2
           }
         }
       });
