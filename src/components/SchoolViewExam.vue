@@ -1,55 +1,76 @@
 <template>
   <div>
-    <!-- {{exams}}<br><br><br>
-    {{sorted}} -->
-    <div v-if="school">
-      <!-- {{school}}
-      {{exams}} -->
-      <div class="page wide-padded-container">
-        <Logo />
-        <h1 class="school-name">
-          {{school.name}}
-        </h1>
-        <div v-if="exams.length">
-          <SchoolViewExam v-for="exam in sorted" :key="exam.id" :exam="exam" />
+    <SchoolLeaderboardsPopup :open.sync="isLBOpen" :exam="exam" />
+
+    <section class="exam">
+      <h2 class="exam-name flex justify-between items-center">
+        <div>
+          {{exam.name}}
         </div>
+        <button class="bg-white text-black px-3 py-1 rounded" @click="isLBOpen = true">
+          <IconLabel icon="bxs-trophy">
+            See the leaderboard
+          </IconLabel>
+        </button>
+      </h2>
+
+      <div v-if="true" class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Present?</th>
+              <th v-for="i in 4" :key="'th' + i">
+                Section {{i}}
+              </th>
+              <th>
+                English
+              </th>
+              <th>
+                Math
+              </th>
+              <th>
+                Total
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="student in exam.students.filter(x => x.score)" :key="student.id" class="student-row">
+              <td>
+                <nuxt-link :to="'/' + student.student.access">
+                  {{student.student.name}}
+                </nuxt-link>
+              </td>
+              <td>
+                <i :class="['bx', student.score && student.score.present ? 'bx-check' : 'bx-x']" />
+              </td>
+              <td v-for="i in 4" :key="'td1' + i">
+                {{student.score.correctCounts[i-1]}}
+              </td>
+              <td v-for="i in 2" :key="'td2' + i">
+                {{student.score.totals[i-1]}}
+              </td>
+              <td>
+                {{student.score.totals[0] + student.score.totals[1]}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script>
-import * as _ from 'lodash';
-
 export default {
+  props: {
+    exam: null
+  },
   data() {
     return {
-      school: null,
-      exams: [],
       isLBOpen: false
     }
-  },
-  async mounted() {
-    // console.log(this.$route.params);
-    const [school, exams] = await this.$axios.$get(`schools/${this.$route.params.id}`);
-    this.school = school;
-    this.exams = exams.map(x => ({...x, students: _.orderBy(x.students, ['score.present', 'student.name'], ['desc', 'asc'])}))
-      .filter(x => x.state === 'scored');
-    console.log(this.exams);
-  },
-  computed: {
-    sorted() {
-      console.log('computed, exams', this.exams);
-      if (!this.exams.length) return [];
-      console.log('computed, sorted', _.orderBy(this.exams, ['date'], ['desc']));
-      return _.orderBy(this.exams, ['date'], ['desc'])
-    }
   }
-  // methods: {
-  //   sorted() {
-
-  //   }
-  // }
 }
 </script>
 

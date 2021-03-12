@@ -101,16 +101,17 @@ export default {
         await this.$router.replace(`create-exam?edit=${id}`);
         window.location.reload();
       } else {
-        id = (await this.$axios.$put(`exams/${this.edit}`, {
+        await this.$axios.$put(`exams/${this.edit}`, {
           name: this.name,
           date: this.date
         }, {
           headers: {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
-        })).id;
+        });
+        id = this.edit;
 
-        await this.$router.replace(`create-exam?edit=${id}`);
+        // await this.$router.replace(`create-exam?edit=${id}`);
         window.location.reload();
       }
     },
