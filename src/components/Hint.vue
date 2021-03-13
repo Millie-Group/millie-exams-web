@@ -1,12 +1,17 @@
 <template>
   <aside class="hint">
-    <i class="bx bxs-help-circle" /><slot />
+    <i class="bx" :class="[icon]" /><slot />
   </aside>
 </template>
 
 <script>
 export default {
-
+  props: {
+    icon: {
+      default: 'bxs-help-circle',
+      type: String
+    }
+  }
 }
 </script>
 

@@ -6,9 +6,24 @@
       <h1 class="student-name">
         {{student.name}}
       </h1>
-      <Hint style="margin: 10px 0 -20px; font-size: 1.1rem">
+      <Hint style="margin: 10px 0 0px; font-size: 1.1rem">
         <a href="/static/FAQ.pdf" target="_blank" style="text-decoration: underline; cursor: pointer">
           FAQ
+        </a>
+      </Hint>
+      <Hint style="margin: 10px 0 0px; font-size: 1.1rem" icon="bx-task">
+        <a href="https://www.studywithmillie.com/services/p/sat-review" target="_blank" style="text-decoration: underline; cursor: pointer">
+          Get a 1:1 SAT Diagnostic Review
+        </a>
+      </Hint>
+      <Hint style="margin: 10px 0 0px; font-size: 1.1rem" icon="bxl-instagram-alt">
+        <a href="https://www.instagram.com/millie_group/" target="_blank" style="text-decoration: underline; cursor: pointer">
+          Follow us on Instagram
+        </a>
+      </Hint>
+      <Hint style="margin: 10px 0 -20px; font-size: 1.1rem" icon="bx-world">
+        <a href="https://www.milliegroup.com/" target="_blank" style="text-decoration: underline; cursor: pointer">
+          Millie Website
         </a>
       </Hint>
       <SignUpExisting />
