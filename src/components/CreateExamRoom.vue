@@ -401,6 +401,8 @@ export default {
           'Section 4': x.score?.correctCounts?.[3],
           English: x.score?.totals?.[0],
           Math: x.score?.totals?.[1],
+          Total: x.score?.totals ? x.score.totals[0] + x.score.totals[1] : null,
+          URL: `https://studywithmillie.milliegroup.com/${x.student.access}`
         }
       })
 
