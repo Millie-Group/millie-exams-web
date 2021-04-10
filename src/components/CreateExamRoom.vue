@@ -283,7 +283,8 @@ export default {
           fullName: headers.findIndex(x => x.startsWith('parent name')),
           name1: headers.findIndex(x => x.startsWith('parent first name')),
           name2: headers.findIndex(x => x.startsWith('parent last name')),
-          email: headers.findIndex(x => x.startsWith('parent email'))
+          email: headers.findIndex(x => x.startsWith('parent email')),
+          whatsapp: headers.findIndex(x => x.startsWith('parent whatsapp number'))
         },
         score: {
           present: headers.findIndex(x => x.startsWith('submitted')),
@@ -394,6 +395,7 @@ export default {
           'Parent First Name': x.student.info?.parent?.name1,
           'Parent Last Name': x.student.info?.parent?.name2,
           'Parent Email': x.student.info?.parent?.email,
+          'Parent WhatsApp Number': x.student.info?.parent?.whatsapp,
           'Submitted?': x.score?.present,
           'Section 1': x.score?.correctCounts?.[0],
           'Section 2': x.score?.correctCounts?.[1],

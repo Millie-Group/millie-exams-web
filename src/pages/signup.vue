@@ -56,12 +56,11 @@
           <CountryDropDown :val.sync="country" />
           <PhoneNoInput
             v-if="Object.keys(country).length > 0"
+            label="Phone Number*"
             :country="country"
             :val.sync="form.info.whatsapp"
             @validated="whatsapp => setError({whatsapp})"
-          >
-            Phone Number*
-          </PhoneNoInput>
+          />
           <Dropdown
             :opts="[
               ['2021', '2021'],
@@ -137,6 +136,13 @@
             ]"
             @validated="parent_email => setError({parent_email})"
           />
+          <PhoneNoInput
+            v-if="Object.keys(country).length > 0"
+            label="Parent's Phone Number*"
+            :country="country"
+            :val.sync="form.info.parent.whatsapp"
+            @validated="parent_whatsapp => setError({parent_whatsapp})"
+          />
           <label style="display: flex">
             <input v-model="accepttos" type="checkbox" style="margin-right: 20px;">
             <div>
@@ -188,7 +194,8 @@ export default {
           parent: {
             name1: '',
             name2: '',
-            email: ''
+            email: '',
+            whatsapp: '',
           }
         }
       },

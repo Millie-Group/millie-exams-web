@@ -1,7 +1,7 @@
 <template>
   <div>
     <TextInput
-      label="WhatsApp number"
+      :label="label"
       :validators="[
         ['Phone number should be valid for your region', validate],
         [null, x => !!x]
@@ -21,6 +21,7 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 export default {
   props: {
     country: Object,
+    label: String,
     val: {
       type: String,
       default: ''

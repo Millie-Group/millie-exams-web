@@ -26,11 +26,17 @@ export default {
     }
   },
   async mounted() {
-    this.exams = await this.$axios.$get('exams', {
+    const exams = (await this.$axios.$get('exams', {
       headers: {
         Authorization: 'Bearer ' + this.$store.state.auth.pw
       }
+    }));
+    exams.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateB - dateA;
     });
+    this.exams = exams;
   }
 }
 </script>
