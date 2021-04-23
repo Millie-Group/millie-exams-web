@@ -12,6 +12,8 @@
       </button>
     </div>
 
+    <ExamType v-if="exam" :type="(exam.meta || {}).type" :exam-id="exam.id" />
+
     <div v-if="edit">
       Sign up link (auto-distribute students to rooms): https://studywithmillie.milliegroup.com/signup?exam={{edit}}
       <br>
@@ -44,6 +46,7 @@ export default {
       students: [],
       edit: this.$route.query.edit,
       isUpdated: false,
+      exam: null,
       rooms: []
     }
   },
@@ -67,6 +70,7 @@ export default {
             Authorization: 'Bearer ' + this.$store.state.auth.pw
           }
         });
+        this.exam = data;
 
         this.selectedStudents = [];
         this.studentsLength = 0;

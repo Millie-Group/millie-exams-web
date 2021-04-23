@@ -277,7 +277,7 @@ export default {
           gradYear: headers.findIndex(x => x.startsWith('grad year')),
           country: headers.findIndex(x => x.startsWith('country')),
           name1: headers.findIndex(x => x.startsWith('student first name')),
-          name2: headers.findIndex(x => x.startsWith('student first name')),
+          name2: headers.findIndex(x => x.startsWith('student last name')),
         },
         studentInfoParent: {
           fullName: headers.findIndex(x => x.startsWith('parent name')),

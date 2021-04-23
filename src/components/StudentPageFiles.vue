@@ -80,6 +80,7 @@ export default {
       link.click();
     },
     async upload() {
+      const isHadUploaded = !!this.files.filter(x => x.studentId).length;
       for (const f of this.fileInputArr) {
         const data = await this.$axios.$post('student-file-url', {
           access: this.$route.params.id,
@@ -106,10 +107,11 @@ export default {
         });
       }
 
-      await this.$axios.$post('student-send-email-after-upload', {
-        access: this.$route.params.id,
-        names: this.fileInputArr.map(x => x.name)
-      });
+      if (!isHadUploaded)
+        await this.$axios.$post('student-send-email-after-upload', {
+          access: this.$route.params.id,
+          names: this.fileInputArr.map(x => x.name)
+        });
 
       window.location.reload();
     }
