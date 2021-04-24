@@ -126,7 +126,7 @@ export default {
           const batch = await Promise.all(mapped);
           const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
           for (const [file, data] of batch.filter(x => x)) {
-            zip.file(`file.student.name (${file.student.email})/` + file.name, data);
+            zip.file(`${file.student.name} (${file.student.email})/` + file.name, data);
           }
         }
         const data = await zip.generateAsync({type: 'blob'});
@@ -134,7 +134,7 @@ export default {
         const _url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = _url;
-        link.setAttribute('download', 'test.zip');
+        link.setAttribute('download', 'files.zip');
         document.body.appendChild(link);
         link.click();
       }
