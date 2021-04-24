@@ -23,6 +23,9 @@
       <summary>
         Student files
       </summary>
+      <PlainButton class="mb-5" @click="downloadAll">
+        Download All
+      </PlainButton>
       <div v-for="[student, studentFiles] in groups" :key="studentFiles[0].studentId" class="group">
         <h2>{{student.name}} ({{student.email}})</h2>
         <div class="inner">
@@ -43,6 +46,24 @@
 <script>
 import * as fileDL from 'js-file-download';
 import { groupBy } from 'lodash';
+import Jszip from 'jszip';
+
+const chunkify = (inputArray, perChunk) => {
+  const result = inputArray.reduce((resultArray, item, index) => {
+    const chunkIndex = Math.floor(index / perChunk)
+
+    if (!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = [] // start a new chunk
+    }
+
+    resultArray[chunkIndex].push(item)
+
+    return resultArray
+  }, [])
+
+  return result;
+}
+
 export default {
   props: {
     files: Array,
@@ -89,6 +110,55 @@ export default {
         }
       });
       window.location.reload()
+    },
+    async downloadAll() {
+      const makePart = async (idx) => {
+        const zip = new Jszip();
+
+        const chunks = chunkify(this.files.filter(x => x.studentId), 5)
+
+        for (const chunk of chunks) {
+          const mapped = chunk.map((file) => {
+            try {
+              return [
+                file,
+                this.$axios.$get(file.url, {
+                  responseType: 'blob'
+                })
+              ];
+            } catch (err) {
+              return undefined;
+            }
+          }).filter(x => x);
+          const batch = await Promise.all(mapped);
+          for (const [file, data] of batch) {
+            zip.file(`file.student.name (${file.student.email})/` + file.name, data);
+          }
+        }
+        const data = await zip.generateAsync({type: 'blob'});
+
+        const _url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = _url;
+        link.setAttribute('download', 'test.zip');
+        document.body.appendChild(link);
+        link.click();
+      }
+
+      await makePart();
+      // const archive = archiver('zip', {
+      //   zlib: { level: 1 } // Sets the compression level.
+      // });
+      // const output = new WritableStream({
+      //   close() {
+      //     console.log('close');
+      //   },
+      //   start() {
+      //     console.log('start');
+      //   }
+      // });
+      // archive.pipe(output);
+      // archive.finalize();
     }
   },
   watch: {
