@@ -23,7 +23,7 @@
       <summary>
         Student files
       </summary>
-      <PlainButton class="mb-5" @click="downloadAll">
+      <PlainButton class="mb-5" @click.native="downloadAll">
         Download All
       </PlainButton>
       <div v-for="[student, studentFiles] in groups" :key="studentFiles[0].studentId" class="group">
