@@ -119,19 +119,13 @@ export default {
 
         for (const chunk of chunks) {
           const mapped = chunk.map((file) => {
-            try {
-              return [
-                file,
-                this.$axios.$get(file.url, {
-                  responseType: 'blob'
-                })
-              ];
-            } catch (err) {
-              return undefined;
-            }
-          }).filter(x => x);
+            return this.$axios.get(file.url, {
+              responseType: 'blob'
+            }).then(({data}) => ([file, data])).catch(e => null)
+          });
           const batch = await Promise.all(mapped);
-          for (const [file, data] of batch) {
+          const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+          for (const [file, data] of batch.filter(x => x)) {
             zip.file(`file.student.name (${file.student.email})/` + file.name, data);
           }
         }
