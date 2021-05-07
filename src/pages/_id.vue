@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import { sortBy } from 'lodash';
 export default {
   data() {
     return {
@@ -147,11 +148,12 @@ export default {
   },
   computed: {
     filteredExams() {
-      const inProgress = this.student?.exams.filter(x => x.exam.state === 'in-progress');
+      const sortByDate = arr => sortBy(arr, ['exam.date'], ['desc']);
+      const inProgress = this.student?.exams.filter(x => x.exam.state === 'in-progress'));
       if (inProgress.length)
-        return inProgress;
+        return sortByDate(inProgress);
 
-      return this.student?.exams;
+      return sortByDate(this.student?.exams);
     }
   },
   mounted() {
