@@ -148,7 +148,7 @@ export default {
   },
   computed: {
     filteredExams() {
-      const sortByDate = arr => sortBy(arr, ['exam.date'], ['desc']);
+      const sortByDate = arr => sortBy(arr, ['exam.date'], ['asc']);
       const inProgress = this.student?.exams.filter(x => x.exam.state === 'in-progress');
       if (inProgress.length)
         return sortByDate(inProgress);
