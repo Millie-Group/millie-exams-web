@@ -63,10 +63,10 @@
           />
           <Dropdown
             :opts="[
-              ['2021', '2021'],
               ['2022', '2022'],
               ['2023', '2023'],
-              ['2024', '2024']
+              ['2024', '2024'],
+              ['2025', '2025']
             ]"
             :val.sync="form.info.gradYear"
             label="High school graduation year*"
@@ -186,7 +186,7 @@ export default {
         name2: '',
         schoolRel: null,
         info: {
-          gradYear: '2021',
+          gradYear: '2022',
           satBefore: true,
           knowMillie: true,
           whatsapp: '',
