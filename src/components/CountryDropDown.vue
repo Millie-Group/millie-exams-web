@@ -1,7 +1,7 @@
 <template>
   <div v-click-outside="() => (isFocused = false)">
     <h1>
-      Country*
+      {{label}}
     </h1>
     <div class="dropdown">
       <input
@@ -43,6 +43,10 @@ export default {
     val: {
       type: Object,
       default: () => ({})
+    },
+    label: {
+      type: String,
+      default: 'Country*'
     }
   },
   data() {

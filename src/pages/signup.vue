@@ -1,166 +1,207 @@
 <template>
   <div class="bg">
-    <div class="page padded-container">
+    <div class="page padded-container poppins">
       <Logo />
       <div v-if="!isSubmit">
         <h1>Sign up to Millie SAT Diagnostic Test</h1>
         <h3>{{examDate}}</h3>
-        <!-- <div>{{exam}} {{examDate}}</div> -->
-        <!-- {{errors}} {{country}}
-        {{ form }} -->
-        <nuxt-link :to="'/login?exam=' + $route.query.exam">
-          <button>
-            I already have an account <i class="bx bx-right-arrow-alt" />
-          </button>
-        </nuxt-link>
-        <form @submit.prevent>
-          <TextInput
-            :val.sync="form.name1"
-            label="First Name*"
-            placeholder="e.g. Millie"
-            :validators="[
-              [null, x => x.length > 0]
-            ]"
-            @validated="name1 => setError({name1})"
-          />
-          <TextInput
-            :val.sync="form.name2"
-            label="Last Name*"
-            placeholder="e.g. Billie"
-            :validators="[
-              [null, x => x.length > 0]
-            ]"
-            @validated="name2 => setError({name2})"
-          />
-          <TextInput
-            :val.sync="form.email"
-            label="Email*"
-            placeholder="e.g. millie.billie@gmail.com"
-            :validators="[
-              [form.email.length && 'The email should be valid', x => /^.+@.+\.[a-zA-Z]{2,}$/.test(x)]
-            ]"
-            @validated="email => setError({email})"
-          />
-          <TextInput
-            :val.sync="form.emailRepeat"
-            label="Repeat email*"
-            placeholder="Repeat your email"
-            :validatordeps="[
-              form.emailRepeat
-            ]"
-            :validators="[
-              [form.emailRepeat.length && 'Emails should match', x => (x === form.email)]
-            ]"
-            @validated="emailRepeat => setError({emailRepeat})"
-          />
-          <CountryDropDown :val.sync="country" />
-          <PhoneNoInput
-            v-if="Object.keys(country).length > 0"
-            label="Phone Number*"
-            :country="country"
-            :val.sync="form.info.whatsapp"
-            @validated="whatsapp => setError({whatsapp})"
-          />
-          <Dropdown
-            :opts="[
-              ['2022', '2022'],
-              ['2023', '2023'],
-              ['2024', '2024'],
-              ['2025', '2025']
-            ]"
-            :val.sync="form.info.gradYear"
-            label="High school graduation year*"
-            style="margin-bottom: 0"
-          />
-          <Dropdown
-            :opts="[[null, 'OTHER (I can\'t find my school in the list)'], ...schools.map(x => [x.id, x.name])]"
-            :val.sync="form.schoolRel"
-            label="School*"
-            style="margin-bottom: 0"
-          />
-          <TextInput
-            v-show="!form.schoolRel"
-            :val.sync="form.info.schoolName"
-            label="Your school's name*"
-            placeholder="e.g. American Academy School"
-            :validators="[
-              [null, x => form.schoolRel || x.length > 0]
-            ]"
-            :validatordeps="[
-              form.schoolRel
-            ]"
-            @validated="school => setError({school})"
-          />
-          <Dropdown
-            :opts="[
-              [true, 'Yes'],
-              [false, 'No'],
-            ]"
-            :val.sync="form.info.satBefore"
-            label="Have you taken the SAT before?*"
-            style="margin-bottom: 0"
-          />
-          <Dropdown
-            :opts="[
-              [true, 'Yes'],
-              [false, 'No'],
-            ]"
-            :val.sync="form.info.knowMillie"
-            label="Do you know Millie?*"
-            style="margin-bottom: 0"
-          />
-          <TextInput
-            :val.sync="form.info.parent.name1"
-            label="Parent's First Name*"
-            placeholder="e.g. Lillie"
-            :validators="[
-              [null, x => x.length > 0]
-            ]"
-            @validated="parent_name1 => setError({parent_name1})"
-          />
-          <TextInput
-            :val.sync="form.info.parent.name2"
-            label="Parent's Last Name*"
-            placeholder="e.g. Billie"
-            :validators="[
-              [null, x => x.length > 0]
-            ]"
-            @validated="parent_name2 => setError({parent_name2})"
-          />
-          <TextInput
-            :val.sync="form.info.parent.email"
-            label="Parent's Email*"
-            placeholder="e.g. lillie.billie@gmail.com"
-            :validators="[
-              [form.email.length && 'The email should be valid', x => /^.+@.+\.[a-zA-Z]{2,}$/.test(x)]
-            ]"
-            @validated="parent_email => setError({parent_email})"
-          />
-          <PhoneNoInput
-            v-if="Object.keys(country).length > 0"
-            label="Parent's Phone Number*"
-            :country="country"
-            :val.sync="form.info.parent.whatsapp"
-            @validated="parent_whatsapp => setError({parent_whatsapp})"
-          />
-          <label style="display: flex">
-            <input v-model="accepttos" type="checkbox" style="margin-right: 20px;">
-            <div>
-              <span style="display: block; font-weight: 500;">I agree to Millie Privacy Policy*</span>
-              By filling out this form, you also sign up to Millie distribution list for full access to our weekly webinars and panels. You will be able to unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.
+
+        <div v-if="page === 1">
+          <div style="margin-bottom: 30px;">
+            <div style="padding: 0 20px 0 53px; text-align: left">
+              This <b>free</b> practice exam includes:</div>
+            <div style="padding: 0 20px 0 53px;margin-top: 10px">
+              🖊️ A <b>full-length</b> exam simulating the actual SAT test</div>
+            <div style="padding: 0 20px 0 53px;margin-top: 10px">
+              👩‍🏫 Live <b>proctoring</b> for the entire duration of the test</div>
+            <div style="padding: 0 20px 0 53px;margin-top: 10px">
+              💯 <b>Results</b>, incl. total score and scores for each section</div>
+            <div style="padding: 0 20px 0 53px;margin-top: 10px; margin-bottom: 30px;">
+              💻 A free, interactive <b>feedback</b> session after the test</div>
+
+            <nuxt-link :to="'/login?exam=' + $route.query.exam" style="margin-bottom: 1px">
+              <button style="margin-bottom: 1px">
+                I already have an account <i class="bx bx-right-arrow-alt" />
+              </button>
+            </nuxt-link>
+
+            <div style="padding: 0 20px 0 53px;margin-top: 30px;">
+              Before we can get you set up, take 10 minutes to answer a few questions about yourself, your academic interests, and university goals.  Thank you for your interest in signing up for Millie’s SAT Diagnostic Test!
             </div>
-          </label>
-          <div
-            class="flex-right"
-            style="margin-bottom: 80px"
-          >
-            <button
-              right
-              :disabled="Object.values(errors).filter(x => !x).length > 0 || !Object.keys(country).length || !accepttos"
-              @click="submit"
-            >
-              Submit <i class="bx bx-right-arrow-alt" />
+          </div>
+          <!-- <div>{{exam}} {{examDate}}</div> -->
+          <!-- {{errors}} {{country}}
+          {{ form }} -->
+
+          <div style="text-align: center; margin-bottom: 30px;">
+            <button style="" @click="page = 2">
+              Take me there
             </button>
+          </div>
+        </div>
+        <form @submit.prevent>
+          <div v-if="page === 2">
+            <TextInput
+              :val.sync="form.name1"
+              label="First Name*"
+              placeholder="e.g. Millie"
+              :validators="[
+                [null, x => x.length > 0]
+              ]"
+              @validated="name1 => setError({name1})"
+            />
+            <TextInput
+              :val.sync="form.name2"
+              label="Last Name*"
+              placeholder="e.g. Billie"
+              :validators="[
+                [null, x => x.length > 0]
+              ]"
+              @validated="name2 => setError({name2})"
+            />
+            <TextInput
+              :val.sync="form.email"
+              label="Email*"
+              placeholder="e.g. millie.billie@gmail.com"
+              :validators="[
+                [form.email.length && 'The email should be valid', x => /^.+@.+\.[a-zA-Z]{2,}$/.test(x)]
+              ]"
+              @validated="email => setError({email})"
+            />
+            <TextInput
+              :val.sync="form.emailRepeat"
+              label="Repeat email*"
+              placeholder="Repeat your email"
+              :validatordeps="[
+                form.emailRepeat
+              ]"
+              :validators="[
+                [form.emailRepeat.length && 'Emails should match', x => (x === form.email)]
+              ]"
+              @validated="emailRepeat => setError({emailRepeat})"
+            />
+            <TextInput
+              :val.sync="form.info.igHandle"
+              label="IG Handle*"
+              placeholder="Your Instagram handle"
+              :validators="[
+                [null, x => x.length > 0]
+              ]"
+              @validated="name1 => setError({igHandle})"
+            />
+            <CountryDropDown :val.sync="country" />
+            <PhoneNoInput
+              v-if="Object.keys(country).length > 0"
+              label="Phone Number*"
+              :country="country"
+              :val.sync="form.info.whatsapp"
+              @validated="whatsapp => setError({whatsapp})"
+            />
+            <Dropdown
+              :opts="[
+                ['2022', '2022'],
+                ['2023', '2023'],
+                ['2024', '2024'],
+                ['2025', '2025'],
+                ['2026', '2026']
+              ]"
+              :val.sync="form.info.gradYear"
+              label="High school graduation year*"
+              style="margin-bottom: 0"
+            />
+            <Dropdown
+              :opts="[[null, 'OTHER (I can\'t find my school in the list)'], ...schools.map(x => [x.id, x.name])]"
+              :val.sync="form.schoolRel"
+              label="School*"
+              style="margin-bottom: 0"
+            />
+            <TextInput
+              v-show="!form.schoolRel"
+              :val.sync="form.info.schoolName"
+              label="Your school's name*"
+              placeholder="e.g. American Academy School"
+              :validators="[
+                [null, x => form.schoolRel || x.length > 0]
+              ]"
+              :validatordeps="[
+                form.schoolRel
+              ]"
+              @validated="school => setError({school})"
+            />
+            <Dropdown
+              :opts="[
+                [true, 'Yes'],
+                [false, 'No'],
+              ]"
+              :val.sync="form.info.satBefore"
+              label="Have you taken the SAT before?*"
+              style="margin-bottom: 0"
+            />
+            <Dropdown
+              :opts="[
+                ['School', 'School'],
+                ['Social Media', 'Social Media'],
+                ['Friends & Family', 'Friends & Family'],
+                ['Other', 'Other']
+              ]"
+              :val.sync="form.info.knowMillieFrom"
+              label="How do you know Millie?*"
+              style="margin-bottom: 0"
+            />
+            <TextInput
+              :val.sync="form.info.parent.name1"
+              label="Parent's First Name*"
+              placeholder="e.g. Lillie"
+              :validators="[
+                [null, x => x.length > 0]
+              ]"
+              @validated="parent_name1 => setError({parent_name1})"
+            />
+            <TextInput
+              :val.sync="form.info.parent.name2"
+              label="Parent's Last Name*"
+              placeholder="e.g. Billie"
+              :validators="[
+                [null, x => x.length > 0]
+              ]"
+              @validated="parent_name2 => setError({parent_name2})"
+            />
+            <TextInput
+              :val.sync="form.info.parent.email"
+              label="Parent's Email*"
+              placeholder="e.g. lillie.billie@gmail.com"
+              :validators="[
+                [form.email.length && 'The email should be valid', x => /^.+@.+\.[a-zA-Z]{2,}$/.test(x)]
+              ]"
+              @validated="parent_email => setError({parent_email})"
+            />
+            <CountryDropDown :val.sync="parentCountry" label="Parent's Country" />
+            <PhoneNoInput
+              v-if="Object.keys(parentCountry).length > 0"
+              label="Parent's Phone Number*"
+              :country="parentCountry"
+              :val.sync="form.info.parent.whatsapp"
+              @validated="parent_whatsapp => setError({parent_whatsapp})"
+            />
+            <label style="display: flex">
+              <input v-model="accepttos" type="checkbox" style="margin-right: 20px;">
+              <div>
+                <span style="display: block; font-weight: 500; margin-bottom: 4px;">I agree to Millie Privacy Policy*</span>
+                By filling out this form, you also sign up to Millie distribution list for full access to our weekly webinars and panels. You will be able to unsubscribe at any time by clicking the link in the footer of our emails. For information about our privacy practices, please visit our website.
+              </div>
+            </label>
+            <div
+              class="flex-right"
+              style="margin-bottom: 80px"
+            >
+              <button
+                right
+                :disabled="Object.values(errors).filter(x => !x).length > 0 || !Object.keys(country).length || !accepttos"
+                @click="submit"
+              >
+                Submit <i class="bx bx-right-arrow-alt" />
+              </button>
+            </div>
           </div>
         </form>
         <!-- {{schools}} -->
@@ -189,6 +230,7 @@ export default {
           gradYear: '2022',
           satBefore: true,
           knowMillie: true,
+          knowMillieFrom: 'Other',
           whatsapp: '',
           schoolName: '',
           parent: {
@@ -196,15 +238,18 @@ export default {
             name2: '',
             email: '',
             whatsapp: '',
-          }
+          },
+          igHandle: ''
         }
       },
       country: {},
+      parentCountry: {},
       isSubmit: false,
       schools: [],
       errors: {},
       exam: null,
-      accepttos: false
+      accepttos: false,
+      page: 1,
     }
   },
   async fetch() {
@@ -304,7 +349,7 @@ h4 {
 //   box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
 //   margin-bottom: 25px;
 // }
-form > * {
+form div > * {
   margin-bottom: 25px;
 }
 button {
@@ -333,5 +378,8 @@ a {
 .flex-right {
   display: flex;
   justify-content: flex-end;
+}
+.poppins {
+  font-family: Poppins !important;
 }
 </style>
