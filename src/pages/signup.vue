@@ -34,8 +34,11 @@
           {{ form }} -->
 
           <div style="text-align: center; margin-bottom: 30px;">
-            <button style="" @click="page = 2">
-              Take me there
+            <button
+              style=""
+              @click="switchPage(2)"
+            >
+              Take me there <i class="bx bx-right-arrow-alt" />
             </button>
           </div>
         </div>
@@ -87,7 +90,7 @@
               :validators="[
                 [null, x => x.length > 0]
               ]"
-              @validated="name1 => setError({igHandle})"
+              @validated="igHandle => setError({igHandle})"
             />
             <CountryDropDown :val.sync="country" />
             <PhoneNoInput
@@ -183,6 +186,157 @@
               :val.sync="form.info.parent.whatsapp"
               @validated="parent_whatsapp => setError({parent_whatsapp})"
             />
+            <div style="text-align: center; margin-bottom: 30px;">
+              <button
+                style=""
+                :disabled="false && (Object.values(errors).filter(x => !x).length > 0 || !Object.keys(country).length || !Object.keys(parentCountry).length)"
+                @click="switchPage(3)"
+              >
+                Next step <i class="bx bx-right-arrow-alt" />
+              </button>
+            </div>
+          </div>
+          <div v-if="page === 3">
+            <Dropdown
+              :opts="[
+                ['tutoring', 'Yes, tutoring'],
+                ['college-counseling', 'Yes, college counseling'],
+                ['tutoring-and-college-counseling', 'Yes, tutoring and college counseling'],
+                ['other', 'Yes, in other areas'],
+                ['no', 'No']
+              ]"
+              :val.sync="form.info.extraAcademicSupport"
+              label="Do you get extra academic support outside of school?*"
+              style="margin-bottom: 0"
+            />
+            <Dropdown
+              :opts="[
+                ['1-1', '1-1 tutoring'],
+                ['group', 'Group tutoring'],
+                ['both', 'I find both helpful'],
+                ['none', 'I don\'t find tutoring helpful'],
+              ]"
+              :val.sync="form.info.tutoringPreference"
+              label="Do you prefer*"
+              style="margin-bottom: 0"
+            />
+            <Dropdown
+              :opts="[
+                ['terrible', 'Terrible'],
+                ['so-so', 'So so'],
+                ['need-guidance', 'I\'m creative, but need some guidance'],
+                ['pro', 'I\'m a pro!'],
+                ['unsure', 'I am not sure']
+              ]"
+              :val.sync="form.info.essayWritingAbility"
+              label="How would you describe your essay writing ability?*"
+              style="margin-bottom: 0"
+            />
+            <Dropdown
+              :opts="[
+                ['high', 'I am very actively involved (5+ activities)'],
+                ['medium', 'I do a couple things I like (2-4 activities)'],
+                ['low', 'I don’t really do much outside of class (0-1 activities)'],
+              ]"
+              :val.sync="form.info.extracurricularInvolvement"
+              label="How would you describe your extracurricular involvement?* Extracurricular activities include: club, sports & music, as well as other  personal activities. e.g. summer school, internship, academic research, volunteer work, etc."
+              style="margin-bottom: 0"
+            />
+
+            <div style="text-align: center; margin-bottom: 30px;">
+              <button
+                style=""
+                :disabled="false && Object.values(errors).filter(x => !x).length > 0"
+                @click="switchPage(4)"
+              >
+                Next step <i class="bx bx-right-arrow-alt" />
+              </button>
+            </div>
+          </div>
+          <div v-if="page === 4">
+            <CheckboxGroup
+              :opts="[
+                ['stem', 'STEM (engineering, Math, Science)'],
+                ['humanities', 'Humanities (Pre-law, History, languages)'],
+                ['social-sciences', 'Social Sciences (Economics, political science)'],
+                ['arts', 'Arts (design, architecture)'],
+                ['business', 'Business'],
+                ['unsure', 'I have no idea'],
+                ['other', 'Other'],
+              ]"
+              :vals.sync="form.info.interestedInMajors"
+              label="What major (in general) are you interested in studying at university?* Select all that apply"
+            />
+            <CheckboxGroup
+              :opts="[
+                ['us', 'US'],
+                ['uk', 'UK'],
+                ['ca', 'Canada'],
+                ['eu', 'EU'],
+                ['hk', 'Hong Kont'],
+                ['local', 'Local (my home country)'],
+                ['other', 'Other'],
+              ]"
+              :vals.sync="form.info.studyDestinations"
+              label="Where would you like to study for university? Select all that apply."
+            />
+            <RadioGroup
+              :opts="[
+                ['yes', 'Yes'],
+                ['no', 'No'],
+                ['unsure', 'Not sure'],
+              ]"
+              :val.sync="form.info.interestedInOxbridge"
+              label="Are you interested in applying to Oxbridge?"
+            />
+            <RadioGroup
+              :opts="[
+                ['yes', 'Yes'],
+                ['no', 'No'],
+                ['unsure', 'Not sure'],
+              ]"
+              :val.sync="form.info.interestedInIvyLeague"
+              label="Are you interested in applying to Ivy League schools?"
+            />
+            <RadioGroup
+              :opts="[
+                ['yes', 'Yes'],
+                ['no', 'No'],
+                ['unsure', 'Not sure'],
+              ]"
+              :val.sync="form.info.interestedInApplyingAsAthlete"
+              label="Are you thinking about applying to universities as a student athlete?"
+            />
+            <RadioGroup
+              :opts="[
+                ['full', 'Yes, full scholarship'],
+                ['partial', 'Yes, partial scholarship'],
+                ['no', 'No'],
+                ['unsure', 'I am not sure']
+              ]"
+              :val.sync="form.info.needsScholarship"
+              label="Are you thinking about applying to universities as a student athlete?"
+            />
+            <RadioGroup
+              :opts="[
+                ['unstarted', 'I haven\'t started yet'],
+                ['research', 'Initial research'],
+                ['list', 'I have a university list'],
+                ['essays', 'I started writing essays'],
+                ['applying', 'I\'m in the process of applying']
+              ]"
+              :val.sync="form.info.prepStage"
+              label="What stage are you in the university preparation process?*"
+            />
+            <TextArea
+              :val.sync="form.info.question"
+              label="What’s one question you want to get answered when it comes to the whole university application process?* (e.g. Is IB better than A Level for US unis, What is early application?, etc.)"
+              :validators="[
+                [null, x => x.length > 0]
+              ]"
+              @validated="question => setError({question})"
+            />
+
             <label style="display: flex">
               <input v-model="accepttos" type="checkbox" style="margin-right: 20px;">
               <div>
@@ -228,8 +382,8 @@ export default {
         schoolRel: null,
         info: {
           gradYear: '2022',
-          satBefore: true,
-          knowMillie: true,
+          // satBefore: true,
+          // knowMillie: true,
           knowMillieFrom: 'Other',
           whatsapp: '',
           schoolName: '',
@@ -239,7 +393,19 @@ export default {
             email: '',
             whatsapp: '',
           },
-          igHandle: ''
+          igHandle: '',
+          extraAcademicSupport: 'tutoring',
+          tutoringPreference: '1-1',
+          essayWritingAbility: 'unsure',
+          extracurricularInvolvement: 'medium',
+          interestedInMajors: [],
+          studyDestinations: [],
+          interestedInOxbridge: 'unsure',
+          interestedInIvyLeague: 'unsure',
+          interestedInApplyingAsAthlete: 'unsure',
+          needsScholarship: 'unsure',
+          prepStage: 'unstarted',
+          question: '',
         }
       },
       country: {},
@@ -279,6 +445,15 @@ export default {
     setError(x) {
       for (const [k, v] of Object.entries(x))
         this.$set(this.errors, k, v)
+    },
+    switchPage(page) {
+      this.page = page;
+      this.$nextTick(() => {
+        document.getElementsByTagName('html')[0].scrollTop = 0;
+      })
+      // if (typeof document !== 'undefined') {
+      // document.scrollTop = 0;
+      // }
     }
   },
   computed: {
@@ -304,7 +479,8 @@ export default {
   background: white;
   margin-top: 30px;
   padding-top: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
+  // margin-bottom: 50px;
   box-shadow: 0px 0px 17px -5px rgba(0, 0, 0, .5);
   padding-bottom: 1px;
   // padding-bottom: 1px;
@@ -314,7 +490,7 @@ export default {
   }
 }
 .bg {
-  background: rgb(251, 108, 48);
+  background: $primary;
   padding-top: 1px;
   padding-bottom: 1px;
   min-height: 100vh;
@@ -355,7 +531,7 @@ form div > * {
 button {
   @include flex-center(v);
   display: inline-flex;
-  border-radius: 3px;
+  border-radius: 10px;
   font-weight: 500;
   font-size: 1.3rem;
   // background: transparentize($color: #ff4b00, $amount: .94);

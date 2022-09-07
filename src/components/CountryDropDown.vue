@@ -88,9 +88,9 @@ export default {
 .dropdown-selected {
   width: 100%;
   padding: 10px 16px;
-  border: 2px solid #fb6c30;
-  border-radius: 3px;
-  box-shadow: 0 6px 6px rgba(255, 75, 0, 0.1);
+  border: 2px solid $primary;
+  border-radius: 10px;
+  box-shadow: 0 6px 6px rgba(7, 27, 50, 0.1);
   color: black;
   background: white;
   // line-height: 1.5em;

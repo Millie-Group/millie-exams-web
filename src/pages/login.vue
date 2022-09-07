@@ -51,6 +51,7 @@ export default {
 <style lang="scss" scoped>
 .page {
   max-width: 500px;
+  font-family: Poppins;
 }
 h1 {
   font-size: 1.5rem;
@@ -72,14 +73,14 @@ input {
   padding: .4em .9em;
   font-size: 1.3rem;
   border: 2px solid $primary;
-  border-radius: 3px;
+  border-radius: 10px;
   box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
   margin-bottom: 25px;
 }
 button {
   @include flex-center(v);
   display: inline-flex;
-  border-radius: 3px;
+  border-radius: 10px;
   font-weight: 500;
   font-size: 1.3rem;
   // background: transparentize($color: #ff4b00, $amount: .94);
