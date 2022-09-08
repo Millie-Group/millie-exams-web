@@ -3861,11 +3861,6 @@ camelcase@^5.0.0, camelcase@^5.3.1:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
-cancelable-promise@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/cancelable-promise/-/cancelable-promise-3.2.0.tgz#aed71da3d514d469232a9d63b833e76c577be366"
-  integrity sha512-BzMz0Oh5bGfPXKF2lpufIXVJSTTZ44hTI9IhkQucKXF9BM1ZPpsn8QPysyKmQnlrw6rqgsdvCBWbGJ2Oi5vmwA==
-
 caniuse-api@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/caniuse-api/-/caniuse-api-3.0.0.tgz#5e4d90e2274961d46291997df599e3ed008ee4c0"
@@ -13854,11 +13849,6 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
-
-vue-infinite-loading@^2.4.5:
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/vue-infinite-loading/-/vue-infinite-loading-2.4.5.tgz#cc20fd40af7f20188006443c99b60470cf1de1b3"
-  integrity sha512-xhq95Mxun060bRnsOoLE2Be6BR7jYwuC89kDe18+GmCLVrRA/dU0jrGb12Xu6NjmKs+iTW0AA6saSEmEW4cR7g==
 
 vue-loader@^15.9.3:
   version "15.9.3"
