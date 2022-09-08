@@ -189,7 +189,7 @@
             <div style="text-align: center; margin-bottom: 30px;">
               <button
                 style=""
-                :disabled="false && (Object.values(errors).filter(x => !x).length > 0 || !Object.keys(country).length || !Object.keys(parentCountry).length)"
+                :disabled="(Object.values(errors).filter(x => !x).length > 0 || !Object.keys(country).length || !Object.keys(parentCountry).length)"
                 @click="switchPage(3)"
               >
                 Next step <i class="bx bx-right-arrow-alt" />
@@ -246,7 +246,7 @@
             <div style="text-align: center; margin-bottom: 30px;">
               <button
                 style=""
-                :disabled="false && Object.values(errors).filter(x => !x).length > 0"
+                :disabled="Object.values(errors).filter(x => !x).length > 0"
                 @click="switchPage(4)"
               >
                 Next step <i class="bx bx-right-arrow-alt" />

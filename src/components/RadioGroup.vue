@@ -16,7 +16,7 @@
         @change="$emit('update:val', v)"
       >
       <span style="margin-left: 20px">
-        {{text}} {{val}} {{v}}
+        {{text}}
       </span>
     </label>
     <!-- </select> -->
