@@ -11,7 +11,7 @@ jobs:
         with: 
           node-version: 12
       - run: npm i -g yarn
-      - run: yarn install
+      - run: yarn install --production --frozen-lockfile
       - run: |
           touch .env
           echo "STAGE=staging" >> .env
