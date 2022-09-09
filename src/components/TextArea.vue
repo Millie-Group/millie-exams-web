@@ -56,7 +56,7 @@ export default {
 textarea {
   width: 100%;
   padding: .4em .9em;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   border: 2px solid $primary;
   border-radius: 10px;
   box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);

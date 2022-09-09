@@ -25,10 +25,10 @@ export default {
 select {
   width: 100%;
   padding: .4em .9em;
-  font-size: 1.3em;
+  font-size: 1.1em;
   border: 2px solid $primary;
   border-radius: 10px;
-  box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
+  // box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
   // margin-bottom: 25px;
 }
 h1 {

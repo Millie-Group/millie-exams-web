@@ -4,7 +4,8 @@
       <Logo />
       <div v-if="!isSubmit">
         <h1>Sign up to Millie SAT Diagnostic Test</h1>
-        <h3>{{examDate}}</h3>
+        <h3 style="font-size: 0.9rem; margin-top: 10px; opacity: 0.75">
+          {{examDate}}</h3>
 
         <div v-if="page === 1">
           <div style="margin-bottom: 30px;">
@@ -19,12 +20,6 @@
             <div style="padding: 0 20px 0 53px;margin-top: 10px; margin-bottom: 30px;">
               💻 A free, interactive <b>feedback</b> session after the test</div>
 
-            <nuxt-link :to="'/login?exam=' + $route.query.exam" style="margin-bottom: 1px">
-              <button style="margin-bottom: 1px">
-                I already have an account <i class="bx bx-right-arrow-alt" />
-              </button>
-            </nuxt-link>
-
             <div style="padding: 0 20px 0 53px;margin-top: 30px;">
               Before we can get you set up, take 10 minutes to answer a few questions about yourself, your academic interests, and university goals.  Thank you for your interest in signing up for Millie’s SAT Diagnostic Test!
             </div>
@@ -33,7 +28,7 @@
           <!-- {{errors}} {{country}}
           {{ form }} -->
 
-          <div style="text-align: center; margin-bottom: 30px;">
+          <div style="text-align: center; margin-bottom: 20px;">
             <button
               style=""
               @click="switchPage(2)"
@@ -41,8 +36,16 @@
               Take me there <i class="bx bx-right-arrow-alt" />
             </button>
           </div>
+          <nuxt-link :to="'/login?exam=' + $route.query.exam" style="margin-bottom: 30px">
+            <button style="margin-bottom: 1px; background: none; color: black; font-size: 1em; text-decoration: underline;">
+              I already have an account
+            </button>
+          </nuxt-link>
         </div>
-        <form @submit.prevent>
+        <form
+          style="margin-top: 40px"
+          @submit.prevent
+        >
           <div v-if="page === 2">
             <TextInput
               :val.sync="form.name1"
@@ -382,7 +385,7 @@ export default {
         schoolRel: null,
         info: {
           gradYear: '2022',
-          // satBefore: true,
+          satBefore: true,
           // knowMillie: true,
           knowMillieFrom: 'Other',
           whatsapp: '',
@@ -533,7 +536,7 @@ button {
   display: inline-flex;
   border-radius: 10px;
   font-weight: 500;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   // background: transparentize($color: #ff4b00, $amount: .94);
   background: $primary;
   color: white;

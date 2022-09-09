@@ -87,16 +87,16 @@ export default {
 .dropdown-input,
 .dropdown-selected {
   width: 100%;
-  padding: 10px 16px;
+  padding: .4em .9em;
   border: 2px solid $primary;
   border-radius: 10px;
-  box-shadow: 0 6px 6px rgba(7, 27, 50, 0.1);
+  // box-shadow: 0 6px 6px rgba(7, 27, 50, 0.1);
   color: black;
   background: white;
   // line-height: 1.5em;
   outline: none;
   // font-weight: 500;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 .dropdown-input:focus,
 .dropdown-selected:hover {
