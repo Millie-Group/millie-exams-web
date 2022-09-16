@@ -88,11 +88,9 @@
             />
             <TextInput
               :val.sync="form.info.igHandle"
-              label="IG Handle*"
+              label="IG Handle"
               placeholder="Your Instagram handle"
-              :validators="[
-                [null, x => x.length > 0]
-              ]"
+              :validators="[]"
               @validated="igHandle => setError({igHandle})"
             />
             <CountryDropDown :val.sync="country" />
@@ -200,7 +198,7 @@
             </div>
           </div>
           <div v-if="page === 3">
-            <Dropdown
+            <RadioGroup
               :opts="[
                 ['tutoring', 'Yes, tutoring'],
                 ['college-counseling', 'Yes, college counseling'],
@@ -210,9 +208,8 @@
               ]"
               :val.sync="form.info.extraAcademicSupport"
               label="Do you get extra academic support outside of school?*"
-              style="margin-bottom: 0"
             />
-            <Dropdown
+            <RadioGroup
               :opts="[
                 ['1-1', '1-1 tutoring'],
                 ['group', 'Group tutoring'],
@@ -221,9 +218,8 @@
               ]"
               :val.sync="form.info.tutoringPreference"
               label="Do you prefer*"
-              style="margin-bottom: 0"
             />
-            <Dropdown
+            <RadioGroup
               :opts="[
                 ['terrible', 'Terrible'],
                 ['so-so', 'So so'],
@@ -233,17 +229,16 @@
               ]"
               :val.sync="form.info.essayWritingAbility"
               label="How would you describe your essay writing ability?*"
-              style="margin-bottom: 0"
             />
-            <Dropdown
+            <RadioGroup
               :opts="[
                 ['high', 'I am very actively involved (5+ activities)'],
                 ['medium', 'I do a couple things I like (2-4 activities)'],
                 ['low', 'I don’t really do much outside of class (0-1 activities)'],
               ]"
               :val.sync="form.info.extracurricularInvolvement"
-              label="How would you describe your extracurricular involvement?* Extracurricular activities include: club, sports & music, as well as other  personal activities. e.g. summer school, internship, academic research, volunteer work, etc."
-              style="margin-bottom: 0"
+              label="How would you describe your extracurricular involvement?*"
+              sublabel="Extracurricular activities include: club, sports & music, as well as other  personal activities. e.g. summer school, internship, academic research, volunteer work, etc."
             />
 
             <div style="text-align: center; margin-bottom: 30px;">
@@ -268,7 +263,8 @@
                 ['other', 'Other'],
               ]"
               :vals.sync="form.info.interestedInMajors"
-              label="What major (in general) are you interested in studying at university?* Select all that apply"
+              label="What major (in general) are you interested in studying at university?*"
+              sublabel="Select all that apply"
             />
             <CheckboxGroup
               :opts="[
@@ -281,7 +277,8 @@
                 ['other', 'Other'],
               ]"
               :vals.sync="form.info.studyDestinations"
-              label="Where would you like to study for university? Select all that apply."
+              label="Where would you like to study for university?*"
+              sublabel="Select all that apply"
             />
             <RadioGroup
               :opts="[
@@ -333,7 +330,8 @@
             />
             <TextArea
               :val.sync="form.info.question"
-              label="What’s one question you want to get answered when it comes to the whole university application process?* (e.g. Is IB better than A Level for US unis, What is early application?, etc.)"
+              label="What’s one question you want to get answered when it comes to the whole university application process?*"
+              sublabel="(e.g. Is IB better than A Level for US unis, What is early application?, etc.)"
               :validators="[
                 [null, x => x.length > 0]
               ]"
@@ -536,11 +534,11 @@ button {
   display: inline-flex;
   border-radius: 10px;
   font-weight: 500;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   // background: transparentize($color: #ff4b00, $amount: .94);
   background: $primary;
   color: white;
-  padding: .3em .6em;
+  padding: .5em 1.1em;
   &[disabled] {
     opacity: .3;
   }

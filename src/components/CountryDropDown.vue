@@ -87,7 +87,8 @@ export default {
 .dropdown-input,
 .dropdown-selected {
   width: 100%;
-  padding: .4em .9em;
+  padding: 8px 20px;
+  font-size: 0.9rem;
   border: 2px solid $primary;
   border-radius: 10px;
   // box-shadow: 0 6px 6px rgba(7, 27, 50, 0.1);
@@ -96,7 +97,6 @@ export default {
   // line-height: 1.5em;
   outline: none;
   // font-weight: 500;
-  font-size: 1.1rem;
 }
 .dropdown-input:focus,
 .dropdown-selected:hover {

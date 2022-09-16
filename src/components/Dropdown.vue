@@ -24,8 +24,8 @@ export default {
 <style lang="scss" scoped>
 select {
   width: 100%;
-  padding: .4em .9em;
-  font-size: 1.1em;
+  padding: 8px 20px;
+  font-size: 0.9rem;
   border: 2px solid $primary;
   border-radius: 10px;
   // box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
