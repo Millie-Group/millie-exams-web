@@ -93,10 +93,10 @@
               :validators="[]"
               @validated="igHandle => setError({igHandle})"
             />
-            <CountryDropDown :val.sync="country" />
+            <CountryDropDown :val.sync="country" label="Type the country of your WhatsApp no.*" />
             <PhoneNoInput
               v-if="Object.keys(country).length > 0"
-              label="Phone Number*"
+              label="Your WhatsApp no.*"
               :country="country"
               :val.sync="form.info.whatsapp"
               @validated="whatsapp => setError({whatsapp})"
@@ -179,10 +179,10 @@
               ]"
               @validated="parent_email => setError({parent_email})"
             />
-            <CountryDropDown :val.sync="parentCountry" label="Parent's Country" />
+            <CountryDropDown :val.sync="parentCountry" label="Type the country of your parent’s WhatsApp no." />
             <PhoneNoInput
               v-if="Object.keys(parentCountry).length > 0"
-              label="Parent's Phone Number*"
+              label="Your parent’s WhatsApp no.*"
               :country="parentCountry"
               :val.sync="form.info.parent.whatsapp"
               @validated="parent_whatsapp => setError({parent_whatsapp})"
@@ -226,7 +226,7 @@
                 ['need-guidance', 'I\'m creative, but need some guidance'],
                 ['pro', 'I\'m a pro!'],
                 ['unsure', 'I am not sure']
-              ]"
+              ].reverse()"
               :val.sync="form.info.essayWritingAbility"
               label="How would you describe your essay writing ability?*"
             />
@@ -272,7 +272,7 @@
                 ['uk', 'UK'],
                 ['ca', 'Canada'],
                 ['eu', 'EU'],
-                ['hk', 'Hong Kont'],
+                ['hk', 'Hong Kong'],
                 ['local', 'Local (my home country)'],
                 ['other', 'Other'],
               ]"
@@ -362,7 +362,7 @@
         <!-- {{schools}} -->
       </div>
       <div v-else>
-        <h2>Please check your inbox for your personal link!</h2>
+        <h2>Check your inbox for your personal link!</h2>
         <h4>Need help? Reach out to us at studywithmillie@milliegroup.com</h4>
       </div>
     </div>

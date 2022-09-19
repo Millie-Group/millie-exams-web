@@ -3,18 +3,18 @@
     <Logo />
     <div v-if="!isSubmit">
       <h1>LOG IN</h1>
-      <nuxt-link :to="'/signup?exam=' + $route.query.exam">
-        <button>
-          Sign up instead <i class="bx bx-right-arrow-alt" />
+      <nuxt-link :to="'/signup?exam=' + $route.query.exam" style="margin-bottom: 30px">
+        <button style="margin-bottom: 1px; background: none; color: black; font-size: 1em; text-decoration: underline;">
+          Sign up instead
         </button>
       </nuxt-link>
-      <input v-model="form.email" placeholder="Email">
+      <TextInput :val.sync="form.email" placeholder="Your email" label="Email" />
       <button right @click="submit">
         Submit <i class="bx bx-right-arrow-alt" />
       </button>
     </div>
     <div v-else>
-      <h2>Please check your inbox for your personal link!</h2>
+      <h2>Check your inbox for your personal link!</h2>
       <h4>Need help? Reach out to us at studywithmillie@milliegroup.com</h4>
     </div>
   </div>
@@ -71,7 +71,7 @@ h4 {
 input {
   width: 100%;
   padding: .4em .9em;
-  font-size: 1.3rem;
+  font-size: 0.9rem;
   border: 2px solid $primary;
   border-radius: 10px;
   // box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
@@ -82,11 +82,14 @@ button {
   display: inline-flex;
   border-radius: 10px;
   font-weight: 500;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   // background: transparentize($color: #ff4b00, $amount: .94);
   background: $primary;
   color: white;
-  padding: .3em .6em;
+  padding: .5em 1.1em;
+  &[disabled] {
+    opacity: .3;
+  }
   &[right] {
     float: right;
   }
