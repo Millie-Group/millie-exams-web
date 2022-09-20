@@ -10,7 +10,7 @@
     <label
       v-for="([v, text], idx) in opts"
       :key="idx"
-      style="display: flex; margin: 10px -13px; font-size: 0.9rem;"
+      style="display: flex; margin: 10px 20px; font-size: 0.9rem;"
     >
       <input
         type="radio"

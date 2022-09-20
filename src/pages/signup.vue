@@ -315,7 +315,7 @@
                 ['unsure', 'I am not sure']
               ]"
               :val.sync="form.info.needsScholarship"
-              label="Are you thinking about applying to universities as a student athlete?"
+              label="Do you need a scholarship to attend university?"
             />
             <RadioGroup
               :opts="[
