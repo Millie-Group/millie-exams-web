@@ -1,7 +1,7 @@
 <template>
   <div v-click-outside="() => (isFocused = false)">
     <h1>
-      Country*
+      {{label}}
     </h1>
     <div class="dropdown">
       <input
@@ -43,6 +43,10 @@ export default {
     val: {
       type: Object,
       default: () => ({})
+    },
+    label: {
+      type: String,
+      default: 'Country*'
     }
   },
   data() {
@@ -83,16 +87,16 @@ export default {
 .dropdown-input,
 .dropdown-selected {
   width: 100%;
-  padding: 10px 16px;
-  border: 2px solid #fb6c30;
-  border-radius: 3px;
-  box-shadow: 0 6px 6px rgba(255, 75, 0, 0.1);
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  border: 2px solid $primary;
+  border-radius: 10px;
+  // box-shadow: 0 6px 6px rgba(7, 27, 50, 0.1);
   color: black;
   background: white;
   // line-height: 1.5em;
   outline: none;
   // font-weight: 500;
-  font-size: 1.3rem;
 }
 .dropdown-input:focus,
 .dropdown-selected:hover {

@@ -9,7 +9,7 @@
       </button>
     </div>
     <div v-else>
-      <h2>Please check your inbox for your personal link!</h2>
+      <h2>Check your inbox for your personal link!</h2>
       <h4>Need help? Reach out to us at studywithmillie@milliegroup.com</h4>
     </div>
   </div>

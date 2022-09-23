@@ -3,7 +3,10 @@
     <h1 v-if="label">
       {{label}}
     </h1>
-    <input v-bind="$attrs" :value="val" @input="x => $emit('update:val', x.target.value)">
+    <h2 v-if="sublabel" style="">
+      {{sublabel}}
+    </h2>
+    <textarea v-bind="$attrs" :value="val" @input="x => $emit('update:val', x.target.value)" />
     <div class="validation-hints">
       <FormValidationHint v-for="([name, correct, vanish], idx) in validationHints.filter(([n]) => n != null && n.length)" :key="idx" :correct="correct" :hide="vanish">
         {{name}}
@@ -24,7 +27,8 @@ export default {
       type: Array,
       default: () => ([])
     },
-    label: null
+    label: null,
+    sublabel: null,
   },
   data() {
     return {
@@ -53,13 +57,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-input {
+textarea {
   width: 100%;
   padding: 8px 20px;
   font-size: 0.9rem;
   border: 2px solid $primary;
   border-radius: 10px;
   // box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
+  min-height: 200px;
   // margin-bottom: 25px;
 }
 h1 {
@@ -70,5 +75,11 @@ h1 {
 }
 .validation-hints {
   margin-top: 7px;
+}
+h2 {
+  margin-left: 20px;
+  font-weight: 400;
+  font-size: .9rem;
+  margin-bottom: 14px;
 }
 </style>

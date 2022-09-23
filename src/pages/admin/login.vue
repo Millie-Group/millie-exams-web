@@ -4,32 +4,34 @@
 
     <div class="flex-wrap">
       <input v-model="pw" placeholder="Password" type="password">
-      <nuxt-link v-if="correct" to="/admin/exam-list">
+      <button @click="login()">
         Continue <i class="bx bx-right-arrow-alt" />
-      </nuxt-link>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import {cancelable} from 'cancelable-promise';
 export default {
   data() {
     return {
       pw: '',
-      correct: false,
+      correct: true,
       promise: null
+    }
+  },
+  methods: {
+    login() {
+      this.promise = this.$axios.$post('/login', {pw: this.pw}, {progress: false});
+      this.promise.then((x) => {
+        if (x)
+          this.$router.push({path: '/admin/exam-list'})
+      });
     }
   },
   watch: {
     pw: {
       handler(n) {
-        if (this.promise) this.promise.cancel();
-        this.promise = cancelable(this.$axios.$post('/login', {pw: n}, {progress: false}));
-        this.promise.then((x) => {
-          this.correct = x
-        });
-        this.$store.commit('auth/set', n)
       }
     }
   }
@@ -52,10 +54,10 @@ export default {
     font-size: 1.3rem;
     border: 2px solid $primary;
     border-radius: 100px;
-    box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
+    // box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
     margin-bottom: 20px;
   }
-  a {
+  button {
     @include flex-center(v);
     border-radius: 100px;
     font-weight: 500;

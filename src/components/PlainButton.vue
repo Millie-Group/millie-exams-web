@@ -10,7 +10,7 @@
 <style lang="scss" scoped>
 .plainbtn {
   @include flex-center(v);
-  border-radius: 5px;
+  border-radius: 10px;
   font-weight: 500;
   font-size: 1.3rem;
   color: #ff4b00;
