@@ -9,7 +9,7 @@
         ref="dropdowninput"
         v-model.trim="inputValue"
         class="dropdown-input"
-        placeholder="Start typing to search"
+       :placeholder="placeholder || 'Start typing to search'"
         autocomplete="chrome-off"
         @focus="isFocused = true"
       >
@@ -47,7 +47,8 @@ export default {
     label: {
       type: String,
       default: 'Country*'
-    }
+    },
+    placeholder: null
   },
   data() {
     return {
