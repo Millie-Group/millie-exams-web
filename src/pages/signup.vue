@@ -93,17 +93,16 @@
               :validators="[]"
               @validated="igHandle => setError({igHandle})"
             />
-            <CountryDropDown :val.sync="country" label="Type the country of your WhatsApp no.*" />
+            <CountryDropDown :val.sync="country" label="Country*" placeholder="Type the country of your phone no." />
             <PhoneNoInput
               v-if="Object.keys(country).length > 0"
-              label="Your WhatsApp no.*"
+              label="Your phone no.*"
               :country="country"
               :val.sync="form.info.whatsapp"
               @validated="whatsapp => setError({whatsapp})"
             />
             <Dropdown
               :opts="[
-                ['2022', '2022'],
                 ['2023', '2023'],
                 ['2024', '2024'],
                 ['2025', '2025'],
@@ -179,10 +178,10 @@
               ]"
               @validated="parent_email => setError({parent_email})"
             />
-            <CountryDropDown :val.sync="parentCountry" label="Type the country of your parent’s WhatsApp no." />
+            <CountryDropDown :val.sync="parentCountry" label="Parent's Country*" placeholder="Type the country of your parent's phone no." />
             <PhoneNoInput
               v-if="Object.keys(parentCountry).length > 0"
-              label="Your parent’s WhatsApp no.*"
+              label="Your parent’s phone no.*"
               :country="parentCountry"
               :val.sync="form.info.parent.whatsapp"
               @validated="parent_whatsapp => setError({parent_whatsapp})"
@@ -382,7 +381,7 @@ export default {
         name2: '',
         schoolRel: null,
         info: {
-          gradYear: '2022',
+          gradYear: '2023',
           satBefore: true,
           // knowMillie: true,
           knowMillieFrom: 'Other',
