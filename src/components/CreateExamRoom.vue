@@ -278,6 +278,20 @@ export default {
           country: headers.findIndex(x => x.startsWith('country')),
           name1: headers.findIndex(x => x.startsWith('student first name')),
           name2: headers.findIndex(x => x.startsWith('student last name')),
+          knowMillieFrom: headers.findIndex(x => x.startsWith('know millie from')),
+          igHandle: headers.findIndex(x => x.startsWith('ig handle')),
+          extraAcademicSupport: headers.findIndex(x => x.startsWith('extra academic support')),
+          tutoringPreference: headers.findIndex(x => x.startsWith('tutoring preference')),
+          essayWritingAbility: headers.findIndex(x => x.startsWith('essay writing ability')),
+          extracurricularInvolvement: headers.findIndex(x => x.startsWith('extracurricular involvement')),
+          interestedInMajors: headers.findIndex(x => x.startsWith('interested in majors')),
+          studyDestinations: headers.findIndex(x => x.startsWith('study destinations')),
+          interestedInOxbridge: headers.findIndex(x => x.startsWith('interested in oxbridge')),
+          interestedInIvyLeague: headers.findIndex(x => x.startsWith('interested in ivy league')),
+          interestedInApplyingAsAthlete: headers.findIndex(x => x.startsWith('interested in aplpying as athlete')),
+          needsScholarship: headers.findIndex(x => x.startsWith('needs scholarship')),
+          prepStage: headers.findIndex(x => x.startsWith('prep stage')),
+          question: headers.findIndex(x => x.startsWith('question')),
         },
         studentInfoParent: {
           fullName: headers.findIndex(x => x.startsWith('parent name')),
@@ -350,6 +364,10 @@ export default {
         }
         for (const [name, idx] of Object.entries(columnIdx.studentInfo)) {
           console.log(row[idx]);
+          if (name === 'interestedInMajors' || name === 'studyDestinations') {
+            obj.student.info[name] = row[idx].split(', ');
+            continue;
+          }
           const val = ['true', 'false'].includes(('' + row[idx]).trim().toLowerCase())
             ? (row[idx].trim().toLowerCase() === 'true')
             : row[idx];
@@ -389,6 +407,20 @@ export default {
           Country: x.student.info?.country,
           'Grad Year': x.student.info?.gradYear,
           'Know Millie?': x.student.info?.knowMillie,
+          'Know Millie From': x.student.info?.knowMillieFrom,
+          'IG Handle': x.student.info?.igHandle,
+          'Extra Academic Support': x.student.info?.extraAcademicSupport,
+          'Tutoring Preference': x.student.info?.tutoringPreference,
+          'Essay Writing Ability': x.student.info?.essayWritingAbility,
+          'Extracurricular Involvement': x.student.info?.extracurricularInvolvement,
+          'Interested In Majors': x.student.info?.interestedInMajors.join(', '),
+          'Study Destinations': x.student.info?.studyDestinations.join(', '),
+          'Interested In Oxbridge?': x.student.info?.interestedInOxbridge,
+          'Interested In Ivy League?': x.student.info?.interestedInIvyLeague,
+          'Interested In Applying As Athlete?': x.student.info?.interestedInApplyingAsAthlete,
+          'Needs Scholarship?': x.student.info?.needsScholarship,
+          'Prep Stage': x.student.info?.prepStage,
+          Question: x.student.info?.question,
           'SAT Before?': x.student.info?.satBefore,
           'Online Timestamp': format(new Date(x.student.onlineAt), 'MM/dd/y hh:mm:ss O'),
           'Parent Name': x.student.info?.parent?.fullName,
