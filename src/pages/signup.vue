@@ -436,6 +436,7 @@ export default {
           name2: this.form.name2,
           parent: {
             ...this.form.info.parent,
+            country: this.parentCountry.name,
             fullName: this.form.info.parent.name1 + ' ' + this.form.info.parent.name2
           }
         }
