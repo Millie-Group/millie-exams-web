@@ -294,12 +294,13 @@ export default {
           console.log('row', row);
           // let obj = {score: {}, student: {info: {}}};
           const email = row[columnIdx.student.email];
-          const obj = currentStudents.find(x => x.student.email === email);
+          let obj = currentStudents.find(x => x.student.email === email);
           if (!obj) return null;
           console.log('found obj', obj);
           obj.score = obj.score || {};
           obj.student = obj.student || {};
           obj.student.info = obj.student.info || {};
+          console.log('found obj2', {...obj});
 
           obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
           obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
