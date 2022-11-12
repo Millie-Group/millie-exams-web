@@ -150,7 +150,7 @@ export default {
     },
     async submit() {
       if (this.isScoresIncorrect) return;
-      let st = this.room.students.filter(x => x).map(x => ({student: x.student, overwrite: x.overwrite}));
+      let st = this.room.students.filter(x => x).map(x => ({student: x.student, overwrite: false}));
 
       // console.log(st);
       // return;
@@ -259,6 +259,7 @@ export default {
       // console.log('finish');
     },
     loadCSV(text) {
+      const currentStudents = this.room.students;
       this.isUpdated = true;
       const csv = window.CSV.parse(text);
       const headers = csv[0].map(x => (x || '').trim().toLowerCase());
@@ -266,40 +267,8 @@ export default {
       const columnIdx = {
         student: {
           email: headers.findIndex(x => x.startsWith('email')),
-          name: headers.findIndex(x => x.startsWith('student name')),
         },
         studentSchoolId: headers.findIndex(x => x.startsWith('school id')),
-        studentInfo: {
-          schoolName: headers.findIndex(x => x.startsWith('school custom')),
-          satBefore: headers.findIndex(x => x.startsWith('sat before')),
-          knowMillie: headers.findIndex(x => x.startsWith('know millie')),
-          whatsapp: headers.findIndex(x => x.startsWith('whatsapp number')),
-          gradYear: headers.findIndex(x => x.startsWith('grad year')),
-          country: headers.findIndex(x => x.startsWith('country')),
-          name1: headers.findIndex(x => x.startsWith('student first name')),
-          name2: headers.findIndex(x => x.startsWith('student last name')),
-          knowMillieFrom: headers.findIndex(x => x.startsWith('know millie from')),
-          igHandle: headers.findIndex(x => x.startsWith('ig handle')),
-          extraAcademicSupport: headers.findIndex(x => x.startsWith('extra academic support')),
-          tutoringPreference: headers.findIndex(x => x.startsWith('tutoring preference')),
-          essayWritingAbility: headers.findIndex(x => x.startsWith('essay writing ability')),
-          extracurricularInvolvement: headers.findIndex(x => x.startsWith('extracurricular involvement')),
-          interestedInMajors: headers.findIndex(x => x.startsWith('interested in majors')),
-          studyDestinations: headers.findIndex(x => x.startsWith('study destinations')),
-          interestedInOxbridge: headers.findIndex(x => x.startsWith('interested in oxbridge')),
-          interestedInIvyLeague: headers.findIndex(x => x.startsWith('interested in ivy league')),
-          interestedInApplyingAsAthlete: headers.findIndex(x => x.startsWith('interested in aplpying as athlete')),
-          needsScholarship: headers.findIndex(x => x.startsWith('needs scholarship')),
-          prepStage: headers.findIndex(x => x.startsWith('prep stage')),
-          question: headers.findIndex(x => x.startsWith('question')),
-        },
-        studentInfoParent: {
-          fullName: headers.findIndex(x => x.startsWith('parent name')),
-          name1: headers.findIndex(x => x.startsWith('parent first name')),
-          name2: headers.findIndex(x => x.startsWith('parent last name')),
-          email: headers.findIndex(x => x.startsWith('parent email')),
-          whatsapp: headers.findIndex(x => x.startsWith('parent whatsapp number'))
-        },
         score: {
           present: headers.findIndex(x => x.startsWith('submitted')),
           correctCounts: [
@@ -313,14 +282,15 @@ export default {
             headers.findIndex(x => x.startsWith('math'))
           ]
         },
-        overwrite: headers.findIndex(x => x.startsWith('overwrite'))
       }
       const body = csv.slice(1);
       this.isScoresIncorrect = false;
 
       const students = body.map((row) => {
-        const obj = {score: {}, student: {info: {}}};
-        obj.overwrite = row[columnIdx.overwrite];
+        // let obj = {score: {}, student: {info: {}}};
+        const email = row[columnIdx.student.email];
+        const obj = currentStudents.find(x => x.student.email === email);
+        if (!obj) return null;
 
         obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
         obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
@@ -356,37 +326,13 @@ export default {
             }
         }
 
-        for (const [name, idx] of Object.entries(columnIdx.student)) {
-          obj.student[name] = row[idx]
-        }
-        if (row[columnIdx.student.school]) {
-          obj.student.school = '' + row[columnIdx.student.school];
-        }
-        for (const [name, idx] of Object.entries(columnIdx.studentInfo)) {
-          console.log(row[idx]);
-          if (name === 'interestedInMajors' || name === 'studyDestinations') {
-            obj.student.info[name] = row[idx].split(', ');
-            continue;
-          }
-          const val = ['true', 'false'].includes(('' + row[idx]).trim().toLowerCase())
-            ? (row[idx].trim().toLowerCase() === 'true')
-            : row[idx];
-          obj.student.info[name] = val
-        }
-        for (const [name, idx] of Object.entries(columnIdx.studentInfoParent)) {
-          const val = ['true', 'false'].includes(('' + row[idx]).trim().toLowerCase())
-            ? (row[idx].trim().toLowerCase() === 'true')
-            : row[idx];
-
-          obj.student.info.parent ||= {};
-          obj.student.info.parent[name] = val
-        }
         if (row[columnIdx.studentSchoolId]) {
           obj.student.school = {name: row[columnIdx.studentSchoolId]}
         }
+
         console.log(obj);
         return obj;
-      });
+      }).filter(x => x);
       this.room.students = [];
 
       this.$nextTick(() => {
