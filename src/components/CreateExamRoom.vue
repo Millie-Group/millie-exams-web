@@ -290,54 +290,61 @@ export default {
       this.isScoresIncorrect = false;
 
       const students = body.map((row) => {
-        console.log('row', row);
-        // let obj = {score: {}, student: {info: {}}};
-        const email = row[columnIdx.student.email];
-        const obj = currentStudents.find(x => x.student.email === email);
-        if (!obj) return null;
-        console.log('found obj', obj);
+        try {
+          console.log('row', row);
+          // let obj = {score: {}, student: {info: {}}};
+          const email = row[columnIdx.student.email];
+          const obj = currentStudents.find(x => x.student.email === email);
+          if (!obj) return null;
+          console.log('found obj', obj);
+          obj.score = obj.score || {};
+          obj.student = obj.student || {};
+          obj.student.info = obj.student.info || {};
 
-        obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
-        obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
+          obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
+          obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
 
-        obj.score.present = (row[columnIdx.score.present] || '').trim().toLowerCase() === 'true';
+          obj.score.present = (row[columnIdx.score.present] || '').trim().toLowerCase() === 'true';
 
-        if (obj.score.present) {
-          for (const [k, v] of [52, 44, 20, 38].entries()) {
-            // console.log(k, v, obj.correctCounts[k]);
-            if (obj.score.correctCounts[k] > v || obj.score.correctCounts[k] < 0) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
+          if (obj.score.present) {
+            for (const [k, v] of [52, 44, 20, 38].entries()) {
+              // console.log(k, v, obj.correctCounts[k]);
+              if (obj.score.correctCounts[k] > v || obj.score.correctCounts[k] < 0) {
+                obj.isIncorrect = true;
+                this.isScoresIncorrect = true;
+              }
             }
+
+            for (const total of obj.score.totals) {
+              if (total < 200 || total > 800) {
+                obj.isIncorrect = true;
+                this.isScoresIncorrect = true;
+              }
+            }
+          } else {
+            for (const correctCount of obj.score.correctCounts)
+              if (correctCount !== 0) {
+                obj.isIncorrect = true;
+                this.isScoresIncorrect = true;
+              }
+
+            for (const total of obj.score.totals)
+              if (total !== 0) {
+                obj.isIncorrect = true;
+                this.isScoresIncorrect = true;
+              }
           }
 
-          for (const total of obj.score.totals) {
-            if (total < 200 || total > 800) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
-            }
+          console.log('school id', row[columnIdx.studentSchoolId]);
+          if (row[columnIdx.studentSchoolId]) {
+            obj.student.school = {name: row[columnIdx.studentSchoolId]}
           }
-        } else {
-          for (const correctCount of obj.score.correctCounts)
-            if (correctCount !== 0) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
-            }
 
-          for (const total of obj.score.totals)
-            if (total !== 0) {
-              obj.isIncorrect = true;
-              this.isScoresIncorrect = true;
-            }
+          console.log(obj);
+          return obj;
+        } catch (e) {
+          console.log(e);
         }
-
-        console.log('school id', row[columnIdx.studentSchoolId]);
-        if (row[columnIdx.studentSchoolId]) {
-          obj.student.school = {name: row[columnIdx.studentSchoolId]}
-        }
-
-        console.log(obj);
-        return obj;
       }).filter(x => x);
       this.room.students = [];
 
