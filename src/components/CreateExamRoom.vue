@@ -292,6 +292,7 @@ export default {
         const email = row[columnIdx.student.email];
         const obj = currentStudents.find(x => x.student.email === email);
         if (!obj) return null;
+        console.log('found obj', obj);
 
         obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
         obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
@@ -327,6 +328,7 @@ export default {
             }
         }
 
+        console.log('school id', row[columnIdx.studentSchoolId]);
         if (row[columnIdx.studentSchoolId]) {
           obj.student.school = {name: row[columnIdx.studentSchoolId]}
         }
