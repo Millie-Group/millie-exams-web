@@ -259,7 +259,8 @@ export default {
       // console.log('finish');
     },
     loadCSV(text) {
-      const currentStudents = this.room.students;
+      const currentStudents = [...this.room.students];
+      console.log(currentStudents);
       this.isUpdated = true;
       const csv = window.CSV.parse(text);
       const headers = csv[0].map(x => (x || '').trim().toLowerCase());
@@ -349,31 +350,7 @@ export default {
           Email: x.student.email,
           'School ID': x.student.school?.name,
           'School Custom': x.student.info?.schoolName,
-          'WhatsApp Number': x.student.info?.whatsapp,
-          Country: x.student.info?.country,
-          'Grad Year': x.student.info?.gradYear,
-          'Know Millie?': x.student.info?.knowMillie,
-          'Know Millie From': x.student.info?.knowMillieFrom,
-          'IG Handle': x.student.info?.igHandle,
-          'Extra Academic Support': x.student.info?.extraAcademicSupport,
-          'Tutoring Preference': x.student.info?.tutoringPreference,
-          'Essay Writing Ability': x.student.info?.essayWritingAbility,
-          'Extracurricular Involvement': x.student.info?.extracurricularInvolvement,
-          'Interested In Majors': x.student.info?.interestedInMajors.join(', '),
-          'Study Destinations': x.student.info?.studyDestinations.join(', '),
-          'Interested In Oxbridge?': x.student.info?.interestedInOxbridge,
-          'Interested In Ivy League?': x.student.info?.interestedInIvyLeague,
-          'Interested In Applying As Athlete?': x.student.info?.interestedInApplyingAsAthlete,
-          'Needs Scholarship?': x.student.info?.needsScholarship,
-          'Prep Stage': x.student.info?.prepStage,
-          Question: x.student.info?.question,
-          'SAT Before?': x.student.info?.satBefore,
           'Online Timestamp': format(new Date(x.student.onlineAt), 'MM/dd/y hh:mm:ss O'),
-          'Parent Name': x.student.info?.parent?.fullName,
-          'Parent First Name': x.student.info?.parent?.name1,
-          'Parent Last Name': x.student.info?.parent?.name2,
-          'Parent Email': x.student.info?.parent?.email,
-          'Parent WhatsApp Number': x.student.info?.parent?.whatsapp,
           'Submitted?': x.score?.present,
           'Section 1': x.score?.correctCounts?.[0],
           'Section 2': x.score?.correctCounts?.[1],
