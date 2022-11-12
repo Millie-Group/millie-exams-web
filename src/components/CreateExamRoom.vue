@@ -284,10 +284,13 @@ export default {
           ]
         },
       }
+      console.log('column indexes', columnIdx);
       const body = csv.slice(1);
+      console.log('body', body);
       this.isScoresIncorrect = false;
 
       const students = body.map((row) => {
+        console.log('row', row);
         // let obj = {score: {}, student: {info: {}}};
         const email = row[columnIdx.student.email];
         const obj = currentStudents.find(x => x.student.email === email);
