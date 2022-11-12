@@ -260,7 +260,7 @@ export default {
     },
     loadCSV(text) {
       const currentStudents = [...this.room.students];
-      console.log(currentStudents);
+      // console.log(currentStudents);
       this.isUpdated = true;
       const csv = window.CSV.parse(text);
       const headers = csv[0].map(x => (x || '').trim().toLowerCase());
@@ -284,23 +284,23 @@ export default {
           ]
         },
       }
-      console.log('column indexes', columnIdx);
+      // console.log('column indexes', columnIdx);
       const body = csv.slice(1);
-      console.log('body', body);
+      // console.log('body', body);
       this.isScoresIncorrect = false;
 
       const students = body.map((row) => {
         try {
-          console.log('row', row);
+          // console.log('row', row);
           // let obj = {score: {}, student: {info: {}}};
           const email = row[columnIdx.student.email];
-          let obj = currentStudents.find(x => x.student.email === email);
+          const obj = {...currentStudents.find(x => x.student.email === email)};
           if (!obj) return null;
-          console.log('found obj', obj);
+          // console.log('found obj', obj);
           obj.score = obj.score || {};
           obj.student = obj.student || {};
           obj.student.info = obj.student.info || {};
-          console.log('found obj2', {...obj});
+          // console.log('found obj2', {...obj});
 
           obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
           obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
@@ -336,12 +336,12 @@ export default {
               }
           }
 
-          console.log('school id', row[columnIdx.studentSchoolId]);
+          // console.log('school id', row[columnIdx.studentSchoolId]);
           if (row[columnIdx.studentSchoolId]) {
             obj.student.school = {name: row[columnIdx.studentSchoolId]}
           }
 
-          console.log(obj);
+          // console.log(obj);
           return obj;
         } catch (e) {
           console.log(e);
