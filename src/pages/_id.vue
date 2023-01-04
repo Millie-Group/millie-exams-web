@@ -55,7 +55,22 @@
                     <th>Correct answers</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="exam.score.newCorrectCounts">
+                  <tr v-for="(count, idx) in exam.score.newCorrectCounts" :key="idx">
+                    <td>
+                      {{
+                        [
+                          'Reading and Writing',
+                          'Math',
+                        ][idx]
+                      }}
+                    </td>
+                    <td>
+                      {{count}} / {{[66, 54][idx]}}
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody v-else>
                   <tr v-for="(count, idx) in exam.score.correctCounts" :key="idx">
                     <td>
                       {{

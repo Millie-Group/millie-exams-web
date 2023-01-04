@@ -44,9 +44,21 @@
               <td>
                 <i :class="['bx', student.score && student.score.present ? 'bx-check' : 'bx-x']" />
               </td>
-              <td v-for="i in 4" :key="'td1' + i">
-                {{student.score.correctCounts[i-1]}}
-              </td>
+              <template v-if="student.score.newCorrectCounts">
+                <td>
+                  {{student.score.newCorrectCounts[0]}}
+                </td>
+                <td />
+                <td>
+                  {{student.score.newCorrectCounts[0]}}
+                </td>
+                <td />
+              </template>
+              <template v-else>
+                <td v-for="i in 4" :key="'td1' + i">
+                  {{student.score.correctCounts[i-1]}}
+                </td>
+              </template>
               <td v-for="i in 2" :key="'td2' + i">
                 {{student.score.totals[i-1]}}
               </td>

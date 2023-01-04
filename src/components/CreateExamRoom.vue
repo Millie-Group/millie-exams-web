@@ -63,6 +63,9 @@
             <th>School ID</th>
             <th>School Custom</th>
             <th>Present?</th>
+            <th v-for="i in 2" :key="'th' + i">
+              New Section {{i}}
+            </th>
             <th v-for="i in 4" :key="'th' + i">
               Section {{i}}
             </th>
@@ -101,10 +104,13 @@
               <td>
                 <i :class="['bx', score.present ? 'bx-check' : 'bx-x']" />
               </td>
-              <td v-for="(_i, i) in 4" :key="'td1' + i">
-                {{score.correctCounts[i]}}
+              <td v-for="(_i, i) in 2" :key="'td1' + i">
+                {{score.newCorrectCounts ? score.newCorrectCounts[i] : ''}}
               </td>
-              <td v-for="(_i, i) in 2" :key="'td2' + i">
+              <td v-for="(_i, i) in 4" :key="'td2' + i">
+                {{score.correctCounts ? score.correctCounts[i] : ''}}
+              </td>
+              <td v-for="(_i, i) in 2" :key="'td3' + i">
                 {{score.totals[i]}}
               </td>
               <td>
@@ -160,7 +166,7 @@ export default {
 
       const copy = [...this.room.students.map((x) => {
         return {
-          correctCounts: x.score.correctCounts.map(x => +x),
+          newCorrectCounts: x.score.newCorrectCounts.map(x => +x),
           totals: x.score.totals.map(x => +x),
           present: x.score.present
         }
@@ -272,11 +278,9 @@ export default {
         studentSchoolId: headers.findIndex(x => x.startsWith('school id')),
         score: {
           present: headers.findIndex(x => x.startsWith('submitted')),
-          correctCounts: [
-            headers.findIndex(x => x.startsWith('section 1')),
-            headers.findIndex(x => x.startsWith('section 2')),
-            headers.findIndex(x => x.startsWith('section 3')),
-            headers.findIndex(x => x.startsWith('section 4'))
+          newCorrectCounts: [
+            headers.findIndex(x => x.startsWith('new section 1')),
+            headers.findIndex(x => x.startsWith('new section 2'))
           ],
           totals: [
             headers.findIndex(x => x.startsWith('english')),
@@ -302,15 +306,14 @@ export default {
           obj.student.info = obj.student.info || {};
           // console.log('found obj2', {...obj});
 
-          obj.score.correctCounts = columnIdx.score.correctCounts.map(x => row[x] || 0);
+          obj.score.newCorrectCounts = columnIdx.score.newCorrectCounts.map(x => row[x] || 0);
           obj.score.totals = columnIdx.score.totals.map(x => row[x] || 0)
 
           obj.score.present = (row[columnIdx.score.present] || '').trim().toLowerCase() === 'true';
 
           if (obj.score.present) {
-            for (const [k, v] of [52, 44, 20, 38].entries()) {
-              // console.log(k, v, obj.correctCounts[k]);
-              if (obj.score.correctCounts[k] > v || obj.score.correctCounts[k] < 0) {
+            for (const [k, v] of [66, 54].entries()) {
+              if (obj.score.newCorrectCounts[k] > v || obj.score.newCorrectCounts[k] < 0) {
                 obj.isIncorrect = true;
                 this.isScoresIncorrect = true;
               }
@@ -323,7 +326,7 @@ export default {
               }
             }
           } else {
-            for (const correctCount of obj.score.correctCounts)
+            for (const correctCount of obj.score.newCorrectCounts)
               if (correctCount !== 0) {
                 obj.isIncorrect = true;
                 this.isScoresIncorrect = true;
@@ -373,6 +376,8 @@ export default {
           'Parent WhatsApp Number': x.student.info?.parent?.whatsapp,
           'Online Timestamp': format(new Date(x.student.onlineAt), 'MM/dd/y hh:mm:ss O'),
           'Submitted?': x.score?.present,
+          'New Section 1': x.score?.newCorrectCounts?.[0],
+          'New Section 2': x.score?.newCorrectCounts?.[1],
           'Section 1': x.score?.correctCounts?.[0],
           'Section 2': x.score?.correctCounts?.[1],
           'Section 3': x.score?.correctCounts?.[2],
