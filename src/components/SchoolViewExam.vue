@@ -20,9 +20,21 @@
             <tr>
               <th>Name</th>
               <th>Present?</th>
-              <th v-for="i in 4" :key="'th' + i">
-                Section {{i}}
-              </th>
+              <template v-if="exam.students.filter(x => x.score.correctCounts).length">
+                <th v-for="i in 4" :key="'th' + i">
+                  Section {{i}}
+                </th>
+              </template>
+              <template v-else>
+                <th>
+                  Section 1
+                </th>
+                <th />
+                <th>
+                  Section 2
+                </th>
+                <th />
+              </template>
               <th>
                 English
               </th>
