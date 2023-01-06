@@ -62,7 +62,7 @@
                 </td>
                 <td />
                 <td>
-                  {{student.score.newCorrectCounts[0]}}
+                  {{student.score.newCorrectCounts[1]}}
                 </td>
                 <td />
               </template>
