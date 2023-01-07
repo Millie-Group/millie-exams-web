@@ -300,7 +300,7 @@ export default {
           // let obj = {score: {}, student: {info: {}}};
           const email = row[columnIdx.student.email];
           let obj = {...currentStudents.find(x => x.student.email === email)};
-          if (!obj) {
+          if (!obj.student) {
             obj = {score: {}, student: this.students.find(x => x.email === email)};
           }
           if (!obj) return null;
