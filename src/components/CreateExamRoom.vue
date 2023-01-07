@@ -266,7 +266,7 @@ export default {
     },
     loadCSV(text) {
       const currentStudents = [...this.room.students];
-      // console.log(currentStudents);
+      console.log(currentStudents);
       this.isUpdated = true;
       const csv = window.CSV.parse(text);
       const headers = csv[0].map(x => (x || '').trim().toLowerCase());
