@@ -192,7 +192,7 @@ export default {
   }
   .exam {
     margin-top: 50px;
-    overflow-x: auto;
+    // overflow-x: auto;
     width: 100%;
 
     &.cancelled {
@@ -245,14 +245,14 @@ export default {
   }
   .score-sum {
     margin-top: 30px;
-    font-size: 3rem;
+    font-size: 2.5rem;
     text-align: center;
     font-weight: 400;
 
     h6 {
       font-size: 1.3rem;
       font-weight: 400;
-      // margin-bottom: -2px;
+      margin-bottom: 10px;
     }
     em {
       font-style: normal;
