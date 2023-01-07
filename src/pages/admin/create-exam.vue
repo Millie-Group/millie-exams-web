@@ -244,8 +244,8 @@ table {
     tr {
       height: 32px;
       th {
-        color: #ff4b00;
-        background: #fff4f0;
+        color: #061a33;
+        background: #eaeff6;
         font-weight: 500;
         position: sticky;
         top: 0;
@@ -313,8 +313,8 @@ h1 {
   border-radius: 5px;
   font-weight: 500;
   font-size: 1.2rem;
-  color: #ff4b00;
-  background: transparentize($color: #ff4b00, $amount: .94);
+  color: #061a33;
+  background: transparentize($color: #061a33, $amount: .94);
   padding: .3em .6em;
   // margin-top: 20px;
   // margin-bottom: 30px;

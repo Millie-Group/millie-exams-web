@@ -58,7 +58,7 @@ export default {
   padding: .4em .8em;
   margin: 0 0 .8em;
   border-radius: 5px;
-  background: #fb6c30;
+  background: #061a33;
   color: white;
   font-size: 1.3rem;
 }
@@ -122,7 +122,7 @@ svg {
   }
   em {
     font-style: normal;
-    color: #fb6c30;
+    color: #061a33;
     font-weight: 600;
   }
   // span {
@@ -183,8 +183,8 @@ table {
     tr {
       height: 32px;
       th {
-        color: #ff4b00;
-        background: #fff4f0;
+        color: #061a33;
+        background: #eaeff6;
         font-weight: 500;
         position: sticky;
         top: 0;

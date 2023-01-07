@@ -186,7 +186,7 @@ export default {
     padding: .4em .8em;
     margin: 0 0 .8em;
     border-radius: 5px;
-    background: #fb6c30;
+    background: #061a33;
     color: white;
     font-size: 1.3rem;
   }
@@ -256,7 +256,7 @@ export default {
     }
     em {
       font-style: normal;
-      color: #fb6c30;
+      color: #061a33;
       font-weight: 600;
     }
     // span {

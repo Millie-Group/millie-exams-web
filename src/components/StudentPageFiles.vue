@@ -173,8 +173,8 @@ h1 {
   border-radius: 5px;
   font-weight: 500;
   font-size: 1.1rem;
-  color: #ff4b00;
-  background: transparentize($color: #ff4b00, $amount: .94);
+  color: #061a33;
+  background: transparentize($color: #061a33, $amount: .94);
   padding: .3em .6em;
   i {
     margin-left: 7px;

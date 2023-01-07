@@ -62,8 +62,8 @@ export default {
     border-radius: 100px;
     font-weight: 500;
     font-size: 1.3rem;
-    color: #ff4b00;
-    background: transparentize($color: #ff4b00, $amount: .94);
+    color: #061a33;
+    background: transparentize($color: #061a33, $amount: .94);
     padding: .3em .6em;
   }
 }

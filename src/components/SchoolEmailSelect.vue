@@ -54,9 +54,9 @@ select {
   width: 100%;
   padding: .4em .9em;
   font-size: 1.3em;
-  border: 2px solid $primary;
+  border: 2px solid #061a33;
   border-radius: 3px;
-  box-shadow: 0 6px 6px transparentize($color: $primary, $amount: .9);
+  box-shadow: 0 6px 6px #eaeff6;
   // margin-bottom: 25px;
 }
 .select-wrap {

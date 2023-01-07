@@ -44,8 +44,8 @@ export default {
 <style lang="scss" scoped>
 .exam-card {
   border-radius: 7px;
-  color: #ff4b00;
-  background: #fff4f0;
+  color: #061a33;
+  background: #eaeff6;
   padding: 1em 1.5em;
   cursor: pointer;
   transition: transform .2s ease;
@@ -77,7 +77,7 @@ export default {
   padding: .4em .8em;
   border-radius: 5px;
   color: white;
-  background: #ff4b00;
+  background: #061a33;
   margin: 0 auto;
 
   @include flex-center(v);

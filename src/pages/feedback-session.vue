@@ -78,7 +78,7 @@ button {
   border-radius: 3px;
   font-weight: 500;
   font-size: 1.3rem;
-  // background: transparentize($color: #ff4b00, $amount: .94);
+  // background: transparentize($color: #061a33, $amount: .94);
   background: $primary;
   color: white;
   padding: .3em .6em;

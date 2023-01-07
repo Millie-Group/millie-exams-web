@@ -57,8 +57,8 @@ input {
 }
 li {
   border-radius: 7px;
-  color: #ff4b00;
-  background: #fff4f0;
+  color: #061a33;
+  background: #eaeff6;
   padding: 1em 1.5em;
   & + & {
     margin-top: 10px;
