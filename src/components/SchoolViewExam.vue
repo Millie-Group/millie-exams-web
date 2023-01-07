@@ -132,7 +132,7 @@ thead {
   border-bottom: 1px solid #ccc;
 
   th {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 500;
   }
 }

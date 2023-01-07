@@ -60,8 +60,8 @@
                     <td>
                       {{
                         [
-                          'Reading and Writing',
-                          'Math',
+                          'Section 1: Reading and Writing',
+                          'Section 2: Math',
                         ][idx]
                       }}
                     </td>
