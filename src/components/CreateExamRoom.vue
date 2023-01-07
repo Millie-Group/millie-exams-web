@@ -148,6 +148,7 @@ export default {
   props: {
     room: null,
     students: null,
+    allStudents: null,
     roomidx: null
   },
   methods: {
@@ -298,7 +299,10 @@ export default {
           // console.log('row', row);
           // let obj = {score: {}, student: {info: {}}};
           const email = row[columnIdx.student.email];
-          const obj = {...currentStudents.find(x => x.student.email === email)};
+          let obj = {...currentStudents.find(x => x.student.email === email)};
+          if (!obj) {
+            obj = {score: {}, student: this.students.find(x => x.email === email)};
+          }
           if (!obj) return null;
           // console.log('found obj', obj);
           obj.score = obj.score || {};

@@ -51,11 +51,14 @@ export default {
     }
   },
   async mounted() {
-    this.students = await this.$axios.$get('students', {
+    const s = await this.$axios.$get('students', {
       headers: {
         Authorization: 'Bearer ' + this.$store.state.auth.pw
       }
     });
+    this.students = s;
+    // console.log('create-exam log:');
+    // console.log(this.students);
     this.fetchEdit();
     // this.fetchEdit();
   },
