@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nuxt --port 3008",
     "build": "nuxt build",
-    "start": "nuxt start --port $(PORT) -c ./nuxt.config.js",
+    "start": "nuxt start --port $PORT -c ./nuxt.config.js",
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lint": "yarn lint:js",
     "dev:sls": "npm run build && sls offline start",
