@@ -70,7 +70,6 @@ module.exports = {
   */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/eslint-module',
   ],
   /*

@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-4">
+  <div class="exam-type">
     <h1>Exam Type</h1>
     <div class="opts">
       <div :class="[type === 'public' && 'active']" @click="change('public')">
@@ -52,5 +52,8 @@ h1 {
     margin-top: 2px;
     cursor: pointer;
   }
+}
+.exam-type {
+  margin-bottom: 16px;
 }
 </style>

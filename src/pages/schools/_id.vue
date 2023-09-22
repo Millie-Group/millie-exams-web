@@ -35,7 +35,7 @@ export default {
     this.school = school;
     this.exams = exams.map(x => ({...x, students: _.orderBy(x.students, ['score.present', 'student.name'], ['desc', 'asc'])}))
       .filter(x => x.state === 'scored');
-    console.log(this.exams);
+    console.log('exams', this.exams);
   },
   computed: {
     sorted() {

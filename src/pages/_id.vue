@@ -29,11 +29,11 @@
       <SignUpExisting />
       <div v-for="exam in filteredExams" :key="exam.exam.id" class="relative">
         <section class="exam" :class="[exam.cancelled && 'cancelled']">
-          <div class="exam-name flex justify-between items-center">
+          <div class="exam-name">
             <div>
               {{exam.exam.name}}
             </div>
-            <button v-if="!exam.cancelled && exam.exam.state === 'about-to-start'" class="bg-white text-black px-3 py-1 rounded" @click="cancel(exam.exam.id)">
+            <button v-if="!exam.cancelled && exam.exam.state === 'about-to-start'" class=" cancel-btn" @click="cancel(exam.exam.id)">
               <IconLabel icon="bxs-calendar-x">
                 Cancel attendance
               </IconLabel>
@@ -111,10 +111,10 @@
           <ExamPlace v-if="!exam.exam.state || exam.exam.state === 'scored'" :place="exam.place" />
         </section>
         <div v-if="exam.cancelled" class="cancel-text bg-white bg-opacity-1 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 py-4 shadow-lg border-black border-2 rounded">
-          <h1 class="w-500 text-2xl text-center">
+          <h1 class="w-500" style="font-size: 24px; line-height: 32px; text-align: center">
             CANCELLED
           </h1>
-          <h2 class="mt-4">
+          <h2 style="margin-top: 16px;">
             You have cancelled your attendance in this exam
           </h2>
         </div>
@@ -163,12 +163,13 @@ export default {
   },
   computed: {
     filteredExams() {
+      const exams = this.student?.exams.filter(x => new Date(x.exam.date) >= new Date('2023-01-01')) || [];
       const sortByDate = arr => orderBy(arr, ['exam.date'], ['desc']);
-      const inProgress = this.student?.exams.filter(x => x.exam.state === 'in-progress');
+      const inProgress = exams.filter(x => x.exam.state === 'in-progress');
       if (inProgress.length)
         return sortByDate(inProgress);
 
-      return sortByDate(this.student?.exams);
+      return sortByDate(exams);
     }
   },
   mounted() {
@@ -189,6 +190,9 @@ export default {
     background: #061a33;
     color: white;
     font-size: 1.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .exam {
     margin-top: 50px;
@@ -275,5 +279,22 @@ export default {
     @media (max-width: 825px) {
       flex-direction: column;
     }
+  }
+  .cancel-btn {
+    background: white;
+    color: black;
+    padding: 4px 12px;
+    border-radius: 5px;
+  }
+  .cancel-text {
+    background: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 16px 32px;
+    shadow: 0 0 10px rgba(0, 0, 0, .3);
+    border: 2px solid black;
+    border-radius: 5px;
   }
 </style>

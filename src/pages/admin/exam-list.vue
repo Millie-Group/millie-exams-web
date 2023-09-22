@@ -46,7 +46,7 @@ export default {
   border-radius: 7px;
   color: #061a33;
   background: #eaeff6;
-  padding: 1em 1.5em;
+  padding: 1em 1.5em 0.5em;
   cursor: pointer;
   transition: transform .2s ease;
   display: block;

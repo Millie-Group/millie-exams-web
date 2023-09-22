@@ -3,11 +3,11 @@
     <SchoolLeaderboardsPopup :open.sync="isLBOpen" :exam="exam" />
 
     <section class="exam">
-      <h2 class="exam-name flex justify-between items-center">
+      <h2 class="exam-name">
         <div>
           {{exam.name}}
         </div>
-        <button class="bg-white text-black px-3 py-1 rounded" @click="isLBOpen = true">
+        <button @click="isLBOpen = true">
           <IconLabel icon="bxs-trophy">
             See the leaderboard
           </IconLabel>
@@ -20,7 +20,7 @@
             <tr>
               <th>Name</th>
               <th>Present?</th>
-              <template v-if="exam.students.filter(x => x.score.correctCounts).length">
+              <template v-if="exam.students.filter(x => x && x.score && x.score.correctCounts).length">
                 <th v-for="i in 4" :key="'th' + i">
                   Section {{i}}
                 </th>
@@ -106,11 +106,21 @@ export default {
   background: #061a33;
   color: white;
   font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .exam {
   margin-top: 50px;
   // overflow-x: auto;
   width: 100%;
+
+  button {
+    background: white;
+    color: black;
+    padding: 4px 12px;
+    border-radius: 5px;
+  }
 }
 .page {
   margin-top: 10px;

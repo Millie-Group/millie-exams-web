@@ -37,7 +37,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 h1 {
   margin-left: 20px;
   font-weight: 500;

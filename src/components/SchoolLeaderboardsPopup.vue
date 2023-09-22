@@ -1,20 +1,20 @@
 <template>
   <PopupWrap :open="open" @update:open="val => {$emit('close'); $emit('update:open', val)}">
-    <div class="wrap mx-auto bg-white rounded">
-      <div class="leaderboards p-6">
+    <div class="wrap">
+      <div class="leaderboards">
         <header style="display: flex">
           <i class="bx bxs-trophy" style="color: gold" />
           <h1>
             Leaderboard
           </h1>
         </header>
-        <h2 class="text-xl mt-4 w-500">
+        <h2 class="w-500">
           {{exam.name}}
         </h2>
         <Hint style="margin-top: 20px;">
           Only includes the schools with 2 or more attendees
         </Hint>
-        <table class="leaderboards__table mt-6">
+        <table class="leaderboards__table">
           <tbody>
             <tr v-for="([s, score], idx) in exam.leaderboards" :key="idx">
               <td>
@@ -25,7 +25,7 @@
                   <div>{{s.name}}</div>
                 </div>
               </td>
-              <td class="pl-4">
+              <td class="">
                 {{score.toFixed()}}
               </td>
             </tr>
@@ -48,12 +48,17 @@ export default {
 <style lang="scss" scoped>
 .wrap {
   width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+  border-radius: 5px;
 }
 .leaderboards {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 70px;
+  padding: 24px;
   h1 {
     display: flex;
     align-items: center;
@@ -61,6 +66,11 @@ export default {
     font-weight: 500;
     font-size: 1.6rem;
     margin-left: 15px;
+  }
+  h2 {
+    font-size: 20px;
+    line-height: 28px;
+    margin-top: 16px;
   }
   i {
     font-size: 3rem;
@@ -83,6 +93,12 @@ tbody tr {
     padding-bottom: 10px;
     padding-left: 15px;
     padding-right: 15px;
+  }
+}
+.leaderboards__table {
+  margin-top: 24px;
+  td {
+    padding-left: 16px;
   }
 }
 </style>
