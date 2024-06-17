@@ -25,7 +25,7 @@ export default {
       this.promise = this.$axios.$post('/login', {pw: this.pw}, {progress: false});
       this.promise.then((x) => {
         if (x) {
-          this.$store.commit('auth/set', n)
+          this.$store.commit('auth/set', this.pw)
           this.$router.push({path: '/admin/exam-list'})
         }
       });
