@@ -12,7 +12,7 @@
         </a>
       </Hint>
       <Hint style="margin: 10px 0 0px; font-size: 1.1rem" icon="bx-task">
-        <a href="https://www.studywithmillie.com/services/p/sat-review" target="_blank" style="text-decoration: underline; cursor: pointer">
+        <a href="https://www.studywithmillie.com/programs/p/sat-review" target="_blank" style="text-decoration: underline; cursor: pointer">
           Get a 1:1 SAT Diagnostic Review
         </a>
       </Hint>
@@ -125,6 +125,7 @@
 
 <script>
 import { orderBy } from 'lodash';
+
 export default {
   data() {
     return {
